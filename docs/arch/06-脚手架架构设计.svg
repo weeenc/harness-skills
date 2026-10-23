@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1300" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1020"/>
+      <stop offset="55%" stop-color="#121a31"/>
+      <stop offset="100%" stop-color="#0d1526"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.16" r="0.75">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#ffffff" stroke-opacity="0.03"/>
+    </pattern>
+    <linearGradient id="g-indigo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="g-cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#0891b2"/>
+    </linearGradient>
+    <linearGradient id="g-emerald" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="g-amber" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="g-rose" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fb7185"/>
+      <stop offset="100%" stop-color="#e11d48"/>
+    </linearGradient>
+    <linearGradient id="g-violet" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="g-teal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2dd4bf"/>
+      <stop offset="100%" stop-color="#0d9488"/>
+    </linearGradient>
+    <linearGradient id="border-core" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#818cf8" stop-opacity="0.55"/>
+      <stop offset="0.5" stop-color="#22d3ee" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#34d399" stop-opacity="0.5"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+    <filter id="shadow-sm" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#94a3b8"/>
+    </marker>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#22d3ee"/>
+    </marker>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1600" height="1300" fill="url(#bg)"/>
+  <rect width="1600" height="1300" fill="url(#glow)"/>
+  <rect width="1600" height="1300" fill="url(#grid)"/>
+
+  <!-- 标题 -->
+  <text x="800" y="52" text-anchor="middle" font-size="30" font-weight="bold" fill="#e2e8f0" letter-spacing="2">Harness Engineering · 脚手架架构</text>
+  <text x="800" y="80" text-anchor="middle" font-size="13" fill="#94a3b8">harness-skills — 跨语言开发流水线技能包 · 一次初始化，全链路规范</text>
+
+  <!-- ===== 第 1 层：入口 ===== -->
+  <rect x="360" y="112" width="10" height="16" rx="3" fill="url(#g-indigo)"/>
+  <text x="380" y="126" font-size="14" font-weight="bold" fill="#a5b4fc">① 入口 / 初始化</text>
+
+  <g filter="url(#shadow-sm)">
+    <rect x="360" y="138" width="400" height="86" rx="12" fill="#1e2440" stroke="#4f46e5" stroke-width="1.4"/>
+    <rect x="360" y="138" width="400" height="3" rx="1.5" fill="url(#g-indigo)"/>
+    <circle cx="392" cy="170" r="13" fill="url(#g-indigo)"/>
+    <text x="392" y="175" text-anchor="middle" font-size="14" fill="#fff">&#9881;</text>
+    <text x="416" y="168" font-size="15" font-weight="bold" fill="#e2e8f0">apply-harness</text>
+    <text x="416" y="194" font-size="11" fill="#94a3b8">自动检测语言/框架（80+），一键生成 .harness/ 骨架</text>
+  </g>
+
+  <g filter="url(#shadow-sm)">
+    <rect x="840" y="138" width="400" height="86" rx="12" fill="#1e2440" stroke="#818cf8" stroke-width="1.4"/>
+    <rect x="840" y="138" width="400" height="3" rx="1.5" fill="url(#g-violet)"/>
+    <circle cx="872" cy="170" r="13" fill="url(#g-violet)"/>
+    <text x="872" y="175" text-anchor="middle" font-size="14" fill="#fff">&#9644;</text>
+    <text x="896" y="168" font-size="15" font-weight="bold" fill="#e2e8f0">install-skill</text>
+    <text x="896" y="194" font-size="11" fill="#94a3b8">注册技能到 19+ AI 工具，斜杠命令立即可用</text>
+  </g>
+
+  <!-- 箭头 1 -->
+  <line x1="800" y1="228" x2="800" y2="252" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrow)"/>
+
+  <!-- ===== 第 2 层：harness-core 核心骨架 ===== -->
+  <rect x="40" y="262" width="1520" height="452" rx="18" fill="#141a33" fill-opacity="0.75" stroke="url(#border-core)" stroke-width="1.6"/>
+  <rect x="40" y="262" width="1520" height="452" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.06"/>
+
+  <rect x="52" y="276" width="12" height="18" rx="3" fill="url(#g-cyan)"/>
+  <text x="72" y="291" font-size="15" font-weight="bold" fill="#67e8f9">② harness-core · 核心骨架（模板源）</text>
+  <text x="960" y="291" font-size="11" fill="#64748b">参数化模板 + 通用技能 + 流水线机制 + 封装组件</text>
+
+  <!-- 模板横条 -->
+  <rect x="70" y="306" width="1460" height="52" rx="9" fill="#0f1730" stroke="#334155" stroke-width="1"/>
+  <text x="88" y="327" font-size="11" font-weight="bold" fill="#7dd3fc">templates /</text>
+  <text x="200" y="327" font-size="11" fill="#cbd5e1">owner.md</text>
+  <text x="340" y="327" font-size="11" fill="#cbd5e1">changes/_TEMPLATE</text>
+  <text x="520" y="327" font-size="11" fill="#cbd5e1">wiki/</text>
+  <text x="620" y="327" font-size="11" fill="#cbd5e1">CONTEXT.md</text>
+  <text x="770" y="327" font-size="11" fill="#94a3b8">│  占位符</text>
+  <text x="850" y="327" font-size="11" fill="#67e8f9">&#123;&#123;LANGUAGE&#125;&#125;</text>
+  <text x="1010" y="327" font-size="11" fill="#67e8f9">&#123;&#123;BUILD_CMD&#125;&#125;</text>
+  <text x="1190" y="327" font-size="11" fill="#67e8f9">&#123;&#123;HARNESS_ME_NAME&#125;&#125;</text>
+  <text x="88" y="348" font-size="10" fill="#64748b">Owner Agent 定义 · 变更卡/评审/验证模板 · 领域知识库 · 共享术语表 —— 所有语言包从这里参数化渲染</text>
+
+  <!-- ===== 列 1：通用辅助 / 机制 ===== -->
+  <rect x="70" y="378" width="350" height="318" rx="10" fill="#0f1730" stroke="#2d3a5c" stroke-width="1"/>
+  <rect x="70" y="378" width="350" height="4" rx="2" fill="url(#g-cyan)"/>
+  <text x="86" y="402" font-size="12" font-weight="bold" fill="#67e8f9">通用辅助 · 流水线机制</text>
+  <text x="318" y="402" font-size="10" fill="#475569">7 项</text>
+
+  <g font-size="11">
+    <rect x="84" y="414" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="96" y="434" font-weight="bold" fill="#7dd3fc">domain-modeling</text>
+    <text x="246" y="434" fill="#94a3b8">领域语言维护</text>
+
+    <rect x="84" y="452" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="96" y="472" font-weight="bold" fill="#7dd3fc">research</text>
+    <text x="246" y="472" fill="#94a3b8">外部事实查证</text>
+
+    <rect x="84" y="490" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="96" y="510" font-weight="bold" fill="#7dd3fc">resolving-merge-conflicts</text>
+    <text x="300" y="510" fill="#94a3b8">解决冲突</text>
+
+    <rect x="84" y="528" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="96" y="548" font-weight="bold" fill="#7dd3fc">harness-status</text>
+    <text x="246" y="548" fill="#94a3b8">变更状态总览</text>
+
+    <rect x="84" y="566" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="96" y="586" font-weight="bold" fill="#7dd3fc">harness-loop-run</text>
+    <text x="246" y="586" fill="#94a3b8">自主收敛引擎</text>
+
+    <rect x="84" y="604" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="96" y="624" font-weight="bold" fill="#7dd3fc">harness-quality</text>
+    <text x="246" y="624" fill="#94a3b8">质量闸门</text>
+
+    <rect x="84" y="642" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="96" y="662" font-weight="bold" fill="#7dd3fc">harness-relate</text>
+    <text x="246" y="662" fill="#94a3b8">变更关系链</text>
+  </g>
+  <!-- ===== 列 2：工程能力 / 模板化流水线 ===== -->
+  <rect x="445" y="378" width="350" height="318" rx="10" fill="#0f1730" stroke="#2d3a5c" stroke-width="1"/>
+  <rect x="445" y="378" width="350" height="4" rx="2" fill="url(#g-emerald)"/>
+  <text x="461" y="402" font-size="12" font-weight="bold" fill="#6ee7b7">工程能力 · 模板化流水线</text>
+  <text x="703" y="402" font-size="10" fill="#475569">8 项</text>
+
+  <g font-size="11">
+    <rect x="459" y="414" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="471" y="434" font-weight="bold" fill="#6ee7b7">harness-e2e</text>
+    <text x="621" y="434" fill="#94a3b8">端到端测试</text>
+
+    <rect x="459" y="452" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="471" y="472" font-weight="bold" fill="#6ee7b7">harness-db-design</text>
+    <text x="621" y="472" fill="#94a3b8">数据库设计</text>
+
+    <rect x="459" y="490" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="471" y="510" font-weight="bold" fill="#6ee7b7">harness-api-mock</text>
+    <text x="621" y="510" fill="#94a3b8">API Mock 数据</text>
+
+    <rect x="459" y="528" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="471" y="548" font-weight="bold" fill="#6ee7b7">harness-refactor</text>
+    <text x="621" y="548" fill="#94a3b8">重构保护</text>
+
+    <rect x="459" y="566" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="471" y="586" font-weight="bold" fill="#a5b4fc">harnessing</text>
+    <text x="621" y="586" fill="#94a3b8">需求拷问引擎（模板化）</text>
+
+    <rect x="459" y="604" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="471" y="624" font-weight="bold" fill="#a5b4fc">coding-skill</text>
+    <text x="621" y="624" fill="#94a3b8">编码实现（模板化）</text>
+
+    <rect x="459" y="642" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="471" y="662" font-weight="bold" fill="#a5b4fc">unit-test-write</text>
+    <text x="621" y="662" fill="#94a3b8">单测编写（模板化）</text>
+
+    <rect x="459" y="666" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="471" y="686" font-weight="bold" fill="#a5b4fc">expert-reviewer</text>
+    <text x="621" y="686" fill="#94a3b8">专家评审（模板化）</text>
+  </g>
+
+  <!-- ===== 列 3：交付与治理 ===== -->
+  <rect x="820" y="378" width="350" height="318" rx="10" fill="#0f1730" stroke="#2d3a5c" stroke-width="1"/>
+  <rect x="820" y="378" width="350" height="4" rx="2" fill="url(#g-amber)"/>
+  <text x="836" y="402" font-size="12" font-weight="bold" fill="#fcd34d">交付 · 治理 · 辅助</text>
+  <text x="1078" y="402" font-size="10" fill="#475569">8 项</text>
+
+  <g font-size="11">
+    <rect x="834" y="414" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="846" y="434" font-weight="bold" fill="#fcd34d">harness-retro</text>
+    <text x="996" y="434" fill="#94a3b8">迭代复盘</text>
+
+    <rect x="834" y="452" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="846" y="472" font-weight="bold" fill="#fcd34d">harness-ship</text>
+    <text x="996" y="472" fill="#94a3b8">发布工作流</text>
+
+    <rect x="834" y="490" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="846" y="510" font-weight="bold" fill="#fcd34d">harness-changelog</text>
+    <text x="996" y="510" fill="#94a3b8">变更日志</text>
+
+    <rect x="834" y="528" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="846" y="548" font-weight="bold" fill="#fcd34d">harness-standard</text>
+    <text x="996" y="548" fill="#94a3b8">规范库管理</text>
+
+    <rect x="834" y="566" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="846" y="586" font-weight="bold" fill="#fda4af">harness-me</text>
+    <text x="996" y="586" fill="#94a3b8">需求打磨入口</text>
+
+    <rect x="834" y="604" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="846" y="624" font-weight="bold" fill="#fda4af">handoff</text>
+    <text x="996" y="624" fill="#94a3b8">上下文交接</text>
+
+    <rect x="834" y="642" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="846" y="662" font-weight="bold" fill="#fda4af">diagnosing-bugs</text>
+    <text x="996" y="662" fill="#94a3b8">Bug 诊断</text>
+
+    <rect x="834" y="666" width="322" height="30" rx="6" fill="#182040" stroke="#263250" stroke-width="1"/>
+    <text x="846" y="686" font-weight="bold" fill="#fda4af">arch-review</text>
+    <text x="996" y="686" fill="#94a3b8">架构体检</text>
+  </g>
+
+  <!-- ===== 列 4：封装组件 Toolkit ===== -->
+  <rect x="1195" y="378" width="335" height="318" rx="10" fill="#0f1730" stroke="#2d3a5c" stroke-width="1"/>
+  <rect x="1195" y="378" width="335" height="4" rx="2" fill="url(#g-rose)"/>
+  <text x="1211" y="402" font-size="12" font-weight="bold" fill="#fda4af">封装组件 Toolkit</text>
+  <text x="1414" y="402" font-size="10" fill="#475569">13 项 · 自动注入</text>
+
+  <g font-size="10">
+    <rect x="1209" y="414" width="152" height="28" rx="6" fill="#1d2340" stroke="#3b2a4a" stroke-width="1"/>
+    <text x="1285" y="433" text-anchor="middle" fill="#f9a8d4">redis-cache-wrapper</text>
+
+    <rect x="1369" y="414" width="147" height="28" rx="6" fill="#1d2340" stroke="#3b2a4a" stroke-width="1"/>
+    <text x="1442" y="433" text-anchor="middle" fill="#f9a8d4">database-migration</text>
+
+    <rect x="1209" y="450" width="152" height="28" rx="6" fill="#1d2340" stroke="#3b2a4a" stroke-width="1"/>
+    <text x="1285" y="469" text-anchor="middle" fill="#f9a8d4">kafka-toolkit</text>
+
+    <rect x="1369" y="450" width="147" height="28" rx="6" fill="#1d2340" stroke="#3b2a4a" stroke-width="1"/>
+    <text x="1442" y="469" text-anchor="middle" fill="#f9a8d4">rocketmq-toolkit</text>
+
+    <rect x="1209" y="486" width="152" height="28" rx="6" fill="#1d2340" stroke="#3b2a4a" stroke-width="1"/>
+    <text x="1285" y="505" text-anchor="middle" fill="#f9a8d4">eventbus-toolkit</text>
+
+    <rect x="1369" y="486" width="147" height="28" rx="6" fill="#1d2340" stroke="#3b2a4a" stroke-width="1"/>
+    <text x="1442" y="505" text-anchor="middle" fill="#f9a8d4">http-client-toolkit</text>
+
+    <rect x="1209" y="522" width="152" height="28" rx="6" fill="#1d2340" stroke="#3b2a4a" stroke-width="1"/>
+    <text x="1285" y="541" text-anchor="middle" fill="#f9a8d4">logging-toolkit</text>
+
+    <rect x="1369" y="522" width="147" height="28" rx="6" fill="#1d2340" stroke="#3b2a4a" stroke-width="1"/>
+    <text x="1442" y="541" text-anchor="middle" fill="#f9a8d4">scheduler-toolkit</text>
+
+    <rect x="1209" y="558" width="152" height="28" rx="6" fill="#1d2340" stroke="#3b2a4a" stroke-width="1"/>
+    <text x="1285" y="577" text-anchor="middle" fill="#f9a8d4">k8s-release-toolkit</text>
+
+    <rect x="1369" y="558" width="147" height="28" rx="6" fill="#1d2340" stroke="#3b2a4a" stroke-width="1"/>
+    <text x="1442" y="577" text-anchor="middle" fill="#f9a8d4">oss-toolkit</text>
+
+    <rect x="1209" y="594" width="152" height="28" rx="6" fill="#1d2340" stroke="#3b2a4a" stroke-width="1"/>
+    <text x="1285" y="613" text-anchor="middle" fill="#f9a8d4">excel-toolkit</text>
+
+    <rect x="1369" y="594" width="147" height="28" rx="6" fill="#1d2340" stroke="#3b2a4a" stroke-width="1"/>
+    <text x="1442" y="613" text-anchor="middle" fill="#f9a8d4">performance-toolkit</text>
+
+    <rect x="1209" y="630" width="307" height="28" rx="6" fill="#1d2340" stroke="#3b2a4a" stroke-width="1"/>
+    <text x="1362" y="649" text-anchor="middle" fill="#f9a8d4">security-toolkit（安全 · 脱敏 · 鉴权）</text>
+  </g>
+
+  <!-- 箭头 2：core → 语言包 -->
+  <line x1="800" y1="714" x2="800" y2="748" stroke="#22d3ee" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+  <text x="818" y="734" font-size="11" fill="#22d3ee">参数化渲染 · {{LANGUAGE}} 占位符填充</text>
+
+  <!-- ===== 第 3 层：语言规范包 ===== -->
+  <rect x="45" y="756" width="12" height="18" rx="3" fill="url(#g-emerald)"/>
+  <text x="65" y="771" font-size="14" font-weight="bold" fill="#6ee7b7">③ 语言规范包 · harness-&lt;语言&gt;</text>
+
+  <!-- Java -->
+  <g filter="url(#shadow-sm)">
+    <rect x="45" y="782" width="235" height="94" rx="12" fill="#1c2438" stroke="#0d9488" stroke-width="1.3"/>
+    <rect x="45" y="782" width="235" height="3" rx="1.5" fill="url(#g-emerald)"/>
+    <text x="162" y="814" text-anchor="middle" font-size="14" font-weight="bold" fill="#e2e8f0">harness-java</text>
+    <text x="162" y="838" text-anchor="middle" font-size="10.5" fill="#94a3b8">Spring Boot · Spring Cloud Alibaba</text>
+    <text x="162" y="856" text-anchor="middle" font-size="10" fill="#64748b">Maven / Gradle · JUnit5</text>
+    <text x="162" y="870" text-anchor="middle" font-size="10" fill="#6ee7b7">Checkstyle + PMD</text>
+  </g>
+
+  <!-- Python -->
+  <g filter="url(#shadow-sm)">
+    <rect x="296" y="782" width="235" height="94" rx="12" fill="#1c2438" stroke="#0d9488" stroke-width="1.3"/>
+    <rect x="296" y="782" width="235" height="3" rx="1.5" fill="url(#g-emerald)"/>
+    <text x="413" y="814" text-anchor="middle" font-size="14" font-weight="bold" fill="#e2e8f0">harness-python</text>
+    <text x="413" y="838" text-anchor="middle" font-size="10.5" fill="#94a3b8">Django · FastAPI · LangChain</text>
+    <text x="413" y="856" text-anchor="middle" font-size="10" fill="#64748b">pip / Poetry / uv · pytest</text>
+    <text x="413" y="870" text-anchor="middle" font-size="10" fill="#6ee7b7">flake8 + mypy + black</text>
+  </g>
+
+  <!-- Go -->
+  <g filter="url(#shadow-sm)">
+    <rect x="547" y="782" width="235" height="94" rx="12" fill="#1c2438" stroke="#0d9488" stroke-width="1.3"/>
+    <rect x="547" y="782" width="235" height="3" rx="1.5" fill="url(#g-emerald)"/>
+    <text x="664" y="814" text-anchor="middle" font-size="14" font-weight="bold" fill="#e2e8f0">harness-golang</text>
+    <text x="664" y="838" text-anchor="middle" font-size="10.5" fill="#94a3b8">Gin · go-zero · eino</text>
+    <text x="664" y="856" text-anchor="middle" font-size="10" fill="#64748b">go mod · go test + testify</text>
+    <text x="664" y="870" text-anchor="middle" font-size="10" fill="#6ee7b7">golangci-lint + go vet</text>
+  </g>
+
+  <!-- Rust -->
+  <g filter="url(#shadow-sm)">
+    <rect x="798" y="782" width="235" height="94" rx="12" fill="#1c2438" stroke="#0d9488" stroke-width="1.3"/>
+    <rect x="798" y="782" width="235" height="3" rx="1.5" fill="url(#g-emerald)"/>
+    <text x="915" y="814" text-anchor="middle" font-size="14" font-weight="bold" fill="#e2e8f0">harness-rust</text>
+    <text x="915" y="838" text-anchor="middle" font-size="10.5" fill="#94a3b8">Axum · Actix Web · Tauri</text>
+    <text x="915" y="856" text-anchor="middle" font-size="10" fill="#64748b">cargo · cargo test + rstest</text>
+    <text x="915" y="870" text-anchor="middle" font-size="10" fill="#6ee7b7">clippy + rustfmt</text>
+  </g>
+
+  <!-- PHP -->
+  <g filter="url(#shadow-sm)">
+    <rect x="1049" y="782" width="235" height="94" rx="12" fill="#1c2438" stroke="#0d9488" stroke-width="1.3"/>
+    <rect x="1049" y="782" width="235" height="3" rx="1.5" fill="url(#g-emerald)"/>
+    <text x="1166" y="814" text-anchor="middle" font-size="14" font-weight="bold" fill="#e2e8f0">harness-php</text>
+    <text x="1166" y="838" text-anchor="middle" font-size="10.5" fill="#94a3b8">Laravel · ThinkPHP · Hyperf</text>
+    <text x="1166" y="856" text-anchor="middle" font-size="10" fill="#64748b">composer · PHPUnit</text>
+    <text x="1166" y="870" text-anchor="middle" font-size="10" fill="#6ee7b7">phpstan + php-cs-fixer</text>
+  </g>
+
+  <!-- Frontend -->
+  <g filter="url(#shadow-sm)">
+    <rect x="1300" y="782" width="255" height="94" rx="12" fill="#1c2438" stroke="#0d9488" stroke-width="1.3"/>
+    <rect x="1300" y="782" width="255" height="3" rx="1.5" fill="url(#g-emerald)"/>
+    <text x="1427" y="814" text-anchor="middle" font-size="14" font-weight="bold" fill="#e2e8f0">harness-front</text>
+    <text x="1427" y="838" text-anchor="middle" font-size="10.5" fill="#94a3b8">Vue3 · React · Next.js · Nuxt</text>
+    <text x="1427" y="856" text-anchor="middle" font-size="10" fill="#64748b">Vite / Webpack · Vitest / Jest</text>
+    <text x="1427" y="870" text-anchor="middle" font-size="10" fill="#6ee7b7">ESLint + Prettier</text>
+  </g>
+
+  <!-- 箭头 3：语言包 → .harness/ 产物 -->
+  <line x1="800" y1="880" x2="800" y2="914" stroke="#22d3ee" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+  <text x="818" y="900" font-size="11" fill="#22d3ee">渲染生成 .harness/ 项目骨架</text>
+
+  <!-- ===== 第 4 层：.harness/ 产物 ===== -->
+  <rect x="45" y="922" width="12" height="18" rx="3" fill="url(#g-amber)"/>
+  <text x="65" y="937" font-size="14" font-weight="bold" fill="#fcd34d">④ 项目骨架产物 · .harness/</text>
+
+  <g font-size="11">
+    <!-- Owner Agent -->
+    <rect x="45" y="948" width="235" height="86" rx="12" fill="#1f2438" stroke="#b45309" stroke-width="1.2" filter="url(#shadow-sm)"/>
+    <text x="162" y="976" text-anchor="middle" font-size="13" font-weight="bold" fill="#fcd34d">Owner Agent</text>
+    <text x="162" y="998" text-anchor="middle" font-size="10" fill="#94a3b8">应用负责人智能体</text>
+    <text x="162" y="1016" text-anchor="middle" font-size="10" fill="#64748b">定义身份 · 编排流水线</text>
+
+    <!-- Rules -->
+    <rect x="296" y="948" width="235" height="86" rx="12" fill="#1f2438" stroke="#b45309" stroke-width="1.2" filter="url(#shadow-sm)"/>
+    <text x="413" y="976" text-anchor="middle" font-size="13" font-weight="bold" fill="#fcd34d">Rules × 5</text>
+    <text x="413" y="998" text-anchor="middle" font-size="10" fill="#94a3b8">编码规范 · 工程结构</text>
+    <text x="413" y="1016" text-anchor="middle" font-size="10" fill="#64748b">SDD-TDD · 流程 · 可靠性</text>
+
+    <!-- Skills -->
+    <rect x="547" y="948" width="235" height="86" rx="12" fill="#1f2438" stroke="#b45309" stroke-width="1.2" filter="url(#shadow-sm)"/>
+    <text x="664" y="976" text-anchor="middle" font-size="13" font-weight="bold" fill="#fcd34d">Skills × 30+</text>
+    <text x="664" y="998" text-anchor="middle" font-size="10" fill="#94a3b8">6 流水线 + 通用辅助</text>
+    <text x="664" y="1016" text-anchor="middle" font-size="10" fill="#64748b">+ 工具包自动注入</text>
+
+    <!-- Changes -->
+    <rect x="798" y="948" width="235" height="86" rx="12" fill="#1f2438" stroke="#b45309" stroke-width="1.2" filter="url(#shadow-sm)"/>
+    <text x="915" y="976" text-anchor="middle" font-size="13" font-weight="bold" fill="#fcd34d">Changes</text>
+    <text x="915" y="998" text-anchor="middle" font-size="10" fill="#94a3b8">change.md / review.md</text>
+    <text x="915" y="1016" text-anchor="middle" font-size="10" fill="#64748b">verify.md · 状态机</text>
+
+    <!-- Wiki -->
+    <rect x="1049" y="948" width="235" height="86" rx="12" fill="#1f2438" stroke="#b45309" stroke-width="1.2" filter="url(#shadow-sm)"/>
+    <text x="1166" y="976" text-anchor="middle" font-size="13" font-weight="bold" fill="#fcd34d">Wiki</text>
+    <text x="1166" y="998" text-anchor="middle" font-size="10" fill="#94a3b8">业务模型 · 接口协议</text>
+    <text x="1166" y="1016" text-anchor="middle" font-size="10" fill="#64748b">数据模型 · 架构决策</text>
+
+    <!-- CONTEXT -->
+    <rect x="1300" y="948" width="255" height="86" rx="12" fill="#1f2438" stroke="#b45309" stroke-width="1.2" filter="url(#shadow-sm)"/>
+    <text x="1427" y="976" text-anchor="middle" font-size="13" font-weight="bold" fill="#fcd34d">CONTEXT.md</text>
+    <text x="1427" y="998" text-anchor="middle" font-size="10" fill="#94a3b8">共享语言机制 · 术语表</text>
+    <text x="1427" y="1016" text-anchor="middle" font-size="10" fill="#64748b">AI 与人类对齐</text>
+  </g>
+
+  <!-- 箭头 4：产物 → 流水线 -->
+  <line x1="800" y1="1038" x2="800" y2="1072" stroke="#22d3ee" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+  <text x="818" y="1058" font-size="11" fill="#22d3ee">按序执行 · 阶段门禁 · 不可跳步</text>
+
+  <!-- ===== 第 5 层：6 阶段流水线 ===== -->
+  <rect x="45" y="1080" width="12" height="18" rx="3" fill="url(#g-rose)"/>
+  <text x="65" y="1095" font-size="14" font-weight="bold" fill="#fda4af">⑤ 6 阶段开发流水线</text>
+
+  <g filter="url(#shadow-sm)">
+    <!-- 1 harnessing -->
+    <rect x="45" y="1106" width="220" height="88" rx="12" fill="url(#g-indigo)"/>
+    <circle cx="78" cy="1132" r="12" fill="#fff" fill-opacity="0.2"/>
+    <text x="78" y="1137" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">1</text>
+    <text x="160" y="1136" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff">harnessing</text>
+    <text x="160" y="1160" text-anchor="middle" font-size="11" fill="#c7d2fe">需求分析 · 规格卡</text>
+    <text x="160" y="1178" text-anchor="middle" font-size="10" fill="#a5b4fc">AC + 边界 + 测试策略</text>
+
+    <!-- 2 coding -->
+    <rect x="296" y="1106" width="220" height="88" rx="12" fill="url(#g-cyan)"/>
+    <circle cx="329" cy="1132" r="12" fill="#fff" fill-opacity="0.2"/>
+    <text x="329" y="1137" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">2</text>
+    <text x="411" y="1136" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff">coding-skill</text>
+    <text x="411" y="1160" text-anchor="middle" font-size="11" fill="#cffafe">编码实现 · TDD</text>
+    <text x="411" y="1178" text-anchor="middle" font-size="10" fill="#67e8f9">Red → Green → Refactor</text>
+
+    <!-- 3 unit-test-write -->
+    <rect x="547" y="1106" width="220" height="88" rx="12" fill="url(#g-emerald)"/>
+    <circle cx="580" cy="1132" r="12" fill="#fff" fill-opacity="0.2"/>
+    <text x="580" y="1137" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">3</text>
+    <text x="662" y="1136" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff">unit-test-write</text>
+    <text x="662" y="1160" text-anchor="middle" font-size="11" fill="#d1fae5">单测编写</text>
+    <text x="662" y="1178" text-anchor="middle" font-size="10" fill="#6ee7b7">核心覆盖率 ≥ 80%</text>
+
+    <!-- 4 expert-reviewer -->
+    <rect x="798" y="1106" width="220" height="88" rx="12" fill="url(#g-amber)"/>
+    <circle cx="831" cy="1132" r="12" fill="#fff" fill-opacity="0.2"/>
+    <text x="831" y="1137" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">4</text>
+    <text x="913" y="1136" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff">expert-reviewer</text>
+    <text x="913" y="1160" text-anchor="middle" font-size="11" fill="#fef3c7">专家评审</text>
+    <text x="913" y="1178" text-anchor="middle" font-size="10" fill="#fcd34d">Spec + Standards 双轴</text>
+
+    <!-- 5 unit-test-ci -->
+    <rect x="1049" y="1106" width="220" height="88" rx="12" fill="url(#g-violet)"/>
+    <circle cx="1082" cy="1132" r="12" fill="#fff" fill-opacity="0.2"/>
+    <text x="1082" y="1137" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">5</text>
+    <text x="1164" y="1136" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff">unit-test-ci</text>
+    <text x="1164" y="1160" text-anchor="middle" font-size="11" fill="#ede9fe">CI 门禁</text>
+    <text x="1164" y="1178" text-anchor="middle" font-size="10" fill="#c4b5fd">静态分析 + 架构约束</text>
+
+    <!-- 6 deploy-verify -->
+    <rect x="1300" y="1106" width="255" height="88" rx="12" fill="url(#g-rose)"/>
+    <circle cx="1333" cy="1132" r="12" fill="#fff" fill-opacity="0.2"/>
+    <text x="1333" y="1137" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">6</text>
+    <text x="1427" y="1136" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff">deploy-verify</text>
+    <text x="1427" y="1160" text-anchor="middle" font-size="11" fill="#ffe4e6">部署验证</text>
+    <text x="1427" y="1178" text-anchor="middle" font-size="10" fill="#fda4af">冒烟 · 健康检查 · 回滚</text>
+  </g>
+
+  <!-- 阶段间箭头 -->
+  <line x1="265" y1="1150" x2="288" y2="1150" stroke="#e2e8f0" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="516" y1="1150" x2="539" y2="1150" stroke="#e2e8f0" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="767" y1="1150" x2="790" y2="1150" stroke="#e2e8f0" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1018" y1="1150" x2="1041" y2="1150" stroke="#e2e8f0" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1269" y1="1150" x2="1292" y2="1150" stroke="#e2e8f0" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ===== 底部图例 ===== -->
+  <rect x="45" y="1220" width="1510" height="69" rx="10" fill="#0f1730" stroke="#2d3a5c" stroke-width="1"/>
+
+  <rect x="70" y="1238" width="14" height="14" rx="4" fill="url(#g-indigo)"/>
+  <text x="90" y="1249" font-size="11" fill="#cbd5e1">入口 / 流水线阶段</text>
+
+  <rect x="250" y="1238" width="14" height="14" rx="4" fill="url(#g-cyan)"/>
+  <text x="270" y="1249" font-size="11" fill="#cbd5e1">核心骨架 / 语言包</text>
+
+  <rect x="450" y="1238" width="14" height="14" rx="4" fill="url(#g-amber)"/>
+  <text x="470" y="1249" font-size="11" fill="#cbd5e1">交付产物</text>
+
+  <line x1="620" y1="1245" x2="648" y2="1245" stroke="#22d3ee" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+  <text x="656" y="1249" font-size="11" fill="#cbd5e1">渲染 / 数据流</text>
+
+  <line x1="820" y1="1245" x2="848" y2="1245" stroke="#e2e8f0" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="856" y="1249" font-size="11" fill="#cbd5e1">流水线执行</text>
+
+  <text x="70" y="1266" font-size="10.5" fill="#64748b">调用方式：流水线 / 辅助 / 治理技能 → 用户主动斜杠命令（/harnessing、/coding-skill …）；封装组件 Toolkit → 由流水线技能检测技术栈后自动注入（如检测到 mybatis-spring-boot-starter 即注入 mybatis-toolkit）</text>
+
+  <text x="70" y="1283" font-size="10.5" fill="#64748b">设计哲学：人类设计约束（Rules）→ AI 沿流水线生产（Skills）→ 机器验证每一步（阶段门禁）· Owner Agent 全程编排 · 变更留档可追溯</text>
+
+</svg>

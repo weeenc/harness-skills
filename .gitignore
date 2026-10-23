@@ -1,0 +1,31 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large binary
+skills.docx
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Environment
+.env
+!.env.example
