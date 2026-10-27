@@ -661,47 +661,47 @@ mkdir -p .claude/skills/
 
 ### Java — Spring Boot + Maven（默认）
 
-| 参数 | 值                                           |
-|------|---------------------------------------------|
-| `{{LANGUAGE}}` | `Java`                                      |
-| `{{LANGUAGE_DESC}}` | Java、Spring Boot、多模块 Maven 架构               |
-| `{{LANGUAGE_RUNTIME}}` | JDK 21 LTS                                  |
-| `{{FRAMEWORK_VER}}` | Spring Boot 3.x+                            |
-| `{{BUILD_TOOL}}` | Maven 3.9+                                  |
-| `{{TEST_FRAMEWORK}}` | JUnit 5 + Mockito + AssertJ                 |
-| `{{COV_TOOL}}` | JaCoCo (核心逻辑 ≥80%)                          |
-| `{{LINT_TOOL}}` | Checkstyle + PMD + SpotBugs                 |
-| `{{ARCH_TEST_TOOL}}` | ArchUnit                                    |
-| `{{DB_ACCESS}}` | MyBatis-Plus / JPA + Flyway                 |
-| `{{LANG_TAG}}` | `-java`                                     |
-| `{{HARNESS_ME_NAME}}` | `/harness-me`                               |
-| `{{HARNESSING_CMD}}` | `/harnessing`                               |
-| `{{BUILD_CMD}}` | `mvn compile`                               |
-| `{{TEST_CMD}}` | `mvn test`                                  |
-| `{{LINT_CMD}}` | `mvn checkstyle:check`                      |
-| `{{DEV_CMD}}` | `mvn spring-boot:run`                       |
-| `{{DOCSTYLE}}` | `Javadoc`                                   |
-| `{{FILE_LIMIT}}` | `500`                                       |
+| 参数 | 值                                      |
+|------|----------------------------------------|
+| `{{LANGUAGE}}` | `Java`                                 |
+| `{{LANGUAGE_DESC}}` | Java、Spring Boot、多模块 Maven 架构          |
+| `{{LANGUAGE_RUNTIME}}` | JDK 21 LTS                             |
+| `{{FRAMEWORK_VER}}` | Spring Boot 3.x+                       |
+| `{{BUILD_TOOL}}` | Maven 3.9+                             |
+| `{{TEST_FRAMEWORK}}` | JUnit 5 + Mockito + AssertJ            |
+| `{{COV_TOOL}}` | JaCoCo (核心逻辑 ≥80%)                     |
+| `{{LINT_TOOL}}` | p3c-pmd  + SpotBugs                 |
+| `{{ARCH_TEST_TOOL}}` | ArchUnit                               |
+| `{{DB_ACCESS}}` | MyBatis-Plus / JPA + Flyway            |
+| `{{LANG_TAG}}` | `-java`                                |
+| `{{HARNESS_ME_NAME}}` | `/harness-me`                          |
+| `{{HARNESSING_CMD}}` | `/harnessing`                          |
+| `{{BUILD_CMD}}` | `mvn compile`                          |
+| `{{TEST_CMD}}` | `mvn test`                             |
+| `{{LINT_CMD}}` | `mvn checkstyle:check`                 |
+| `{{DEV_CMD}}` | `mvn spring-boot:run`                  |
+| `{{DOCSTYLE}}` | `Javadoc`                              |
+| `{{FILE_LIMIT}}` | `500`                                  |
 | `{{ARCH_LAYER}}` | 模块间仅通过接口通信，依赖方向 `common ← service ← server` |
-| `{{TEST_NAMING}}` | `method_should_x_when_y`                    |
-| `{{MOCK_LIB}}` | `Mockito`                                   |
-| `{{COV_CMD}}` | `mvn jacoco:report`                         |
-| `{{DEBUG_TOOL}}` | 调试器 / `jdb`                                 |
-| `{{ARCH_REVIEW_CMD}}` | `/arch-review`                              |
-| `{{ARCH_TEST_CMD}}` | 架构约束测试命令                                    |
-| `{{SECURITY_CMD}}` | 安全扫描命令                                      |
-| `{{INTEGRATION_CMD}}` | 集成测试命令                                      |
-| `{{RUN_CMD}}` | 启动服务命令                                      |
-| `{{HEALTH_CHECK_CMD}}` | 健康检查命令                                      |
-| `{{HEALTH_ENDPOINT}}` | 健康检查端点                                      |
-| `{{METRICS_ENDPOINT}}` | 指标端点                                        |
-| `{{VET_CMD}}` | 静态分析命令（实际合并到 LINT_CMD）                      |
-| `{{DEP_CMD}}` | 依赖管理命令：`mvn dependency:tree`                |
-| `{{ORM_TOOL}}` | ORM 框架：MyBatis-Plus / JPA                   |
-| `{{TYPE_CHECK_TOOL}}` | 类型检查工具：javac（编译时检查）                         |
-| `{{TYPE_CHECK_CMD}}` | 类型检查命令：`{{BUILD_CMD}}`                      |
-| `{{ASSERT_LIB}}` | 断言库：AssertJ                                 |
-| `{{RACE_DETECT_ARG}}` | 竞态检测参数：空                                    |
+| `{{TEST_NAMING}}` | `method_should_x_when_y`               |
+| `{{MOCK_LIB}}` | `Mockito`                              |
+| `{{COV_CMD}}` | `mvn jacoco:report`                    |
+| `{{DEBUG_TOOL}}` | 调试器 / `jdb`                            |
+| `{{ARCH_REVIEW_CMD}}` | `/arch-review`                         |
+| `{{ARCH_TEST_CMD}}` | 架构约束测试命令                               |
+| `{{SECURITY_CMD}}` | 安全扫描命令                                 |
+| `{{INTEGRATION_CMD}}` | 集成测试命令                                 |
+| `{{RUN_CMD}}` | 启动服务命令                                 |
+| `{{HEALTH_CHECK_CMD}}` | 健康检查命令                                 |
+| `{{HEALTH_ENDPOINT}}` | 健康检查端点                                 |
+| `{{METRICS_ENDPOINT}}` | 指标端点                                   |
+| `{{VET_CMD}}` | 静态分析命令（实际合并到 LINT_CMD）                 |
+| `{{DEP_CMD}}` | 依赖管理命令：`mvn dependency:tree`           |
+| `{{ORM_TOOL}}` | ORM 框架：MyBatis-Plus / JPA              |
+| `{{TYPE_CHECK_TOOL}}` | 类型检查工具：javac（编译时检查）                    |
+| `{{TYPE_CHECK_CMD}}` | 类型检查命令：`{{BUILD_CMD}}`                 |
+| `{{ASSERT_LIB}}` | 断言库：AssertJ                            |
+| `{{RACE_DETECT_ARG}}` | 竞态检测参数：空                               |
 
 ### Java — Spring Boot + Gradle
 
