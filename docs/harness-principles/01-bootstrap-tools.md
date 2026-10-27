@@ -2,9 +2,9 @@
 
 ## 一、用途
 
-回答「**这个门禁现在到底能不能真跑**」。它是所有 gate 脚本的前置检查：门禁要跑 checkstyle、
+回答「**这个门禁现在到底能不能真跑**」。它是所有 gate 脚本的前置检查：门禁要跑 p3c-pmd、
 JaCoCo、AssertJ、Spring Boot Actuator…先确认这些依赖在不在——**不在就显式降级，而不是让
-构建失败被误判成风格违规**。也回答你上一个问题：Checkstyle/JaCoCo/AssertJ 不是"一个脚本解决了"，
+构建失败被误判成风格违规**。也回答你上一个问题：p3c-pmd/JaCoCo/AssertJ 不是"一个脚本解决了"，
 是脚本**只检测声明、输出合入指引（GUIDE），绝不替你改 pom.xml/build.gradle**——改构建文件是
 规范流程（harness-standard）的职责。
 
@@ -35,10 +35,10 @@ bash .harness/scripts/bootstrap-tools.sh [check|install] [gate]
 |---|---|---|---|
 | `runners` | 构建/运行器（mvn / ./gradlew / npm / go / python…） | `command -v` 检测，`[MISS]` 输出手动安装指引 | **不自动装**（动系统级工具链风险大，只给指引） |
 | `tools` | 可安全自动装的独立工具（npm i -D / pip install / go install…） | `[MISS]` 给安装命令 | 自动执行 `eval "$install_cmd"`，失败 `[FAIL]` 提示手动 |
-| `project` | 项目内【声明】组件（checkstyle/jacoco/pmd/spotbugs 插件、assertj、spring-boot-starter-actuator、devDependencies） | `grep -q` 探测构建文件（pom.xml/build.gradle/package.json…）是否声明；未声明 `[GUIDE]` 输出合入指引 | **绝不自动改写构建文件**（副作用不可控，属规范流程范畴） |
+| `project` | 项目内【声明】组件（pmd/p3c-pmd/jacoco/spotbugs 插件、assertj、spring-boot-starter-actuator、devDependencies） | `grep -q` 探测构建文件（pom.xml/build.gradle/package.json…）是否声明；未声明 `[GUIDE]` 输出合入指引 | **绝不自动改写构建文件**（副作用不可控，属规范流程范畴） |
 
 3. **gate 过滤**：每项带 gates 标签（如 `lint,vet`），`wanted()` 按 `GATE` 参数匹配——
-   只查本次门禁需要的依赖，避免无关缺失误伤（如跑 coverage 不因 checkstyle 没声明而失败）。
+   只查本次门禁需要的依赖，避免无关缺失误伤（如跑 coverage 不因 p3c-pmd 没声明而失败）。
 
 ## 四、如何出结果（stdout 标记与退出码）
 

@@ -52,7 +52,7 @@
 
 | 语言 | 基线规范 | 测试框架 | 代码规范 |
 |------|---------|---------|---------|
-| **Java** | Alibaba Java 手册 | JUnit 5 + Mockito | Checkstyle + PMD |
+| **Java** | Alibaba Java 手册 | JUnit 5 + Mockito | p3c-pmd + PMD |
 | **Python** | PEP 8 + Google Style | pytest + pytest-mock | flake8 + mypy + black |
 | **Go** | Go Code Review + Uber Style | go test + testify | golangci-lint + go vet |
 | **Frontend** | Vue 3 + TypeScript 严格模式 | Vitest + @vue/test-utils | ESLint + Prettier + vue-tsc |

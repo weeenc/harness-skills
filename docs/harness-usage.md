@@ -77,9 +77,9 @@ bash .harness/scripts/bootstrap-tools.sh check all
 |---|---|---|---|
 | 全 `[OK]` | 0 | 依赖就绪，门禁可真实执行 | 直接进 1.5 |
 | `[MISS]` | 1 | 可自动安装的独立工具缺失 | `bash .harness/scripts/bootstrap-tools.sh install all` 自动装，再 check |
-| `[GUIDE]` | 2 | **项目内组件未声明**（如 Maven 缺 checkstyle/jacoco 插件、缺 assertj/actuator 依赖） | 按输出指引**人工合入** `pom.xml` / `build.gradle` / `package.json`（门禁脚本绝不自动改写构建配置——那是规范流程范畴） |
+| `[GUIDE]` | 2 | **项目内组件未声明**（如 Maven 缺 PMD 插件/p3c-pmd 规则或 jacoco 插件、缺 assertj/actuator 依赖） | 按输出指引**人工合入** `pom.xml` / `build.gradle` / `package.json`（门禁脚本绝不自动改写构建配置——那是规范流程范畴） |
 
-> 举例：Java + Maven 项目，pom.xml 没配 checkstyle 插件 → `[GUIDE] …未在 pom.xml 中声明→ 请人工合入`，此时 `check-style` 门禁会输出 `[DEGRADED]` 并以退出码 2 显式降级，**不会**把 `mvn checkstyle:check` 的 BUILD FAILURE 误判成风格违规。
+> 举例：Java + Maven 项目，pom.xml 没配 PMD 插件或 p3c-pmd 规则 → `[GUIDE] …未在 pom.xml 中声明→ 请人工合入`，此时 `check-style` 门禁会输出 `[DEGRADED]` 并以退出码 2 显式降级，**不会**把 `mvn pmd:check` 的 BUILD FAILURE 误判成风格违规。
 
 ### 1.5 hooks 连通性自测（30 秒，做一次知道门禁是真拦还是摆设）
 

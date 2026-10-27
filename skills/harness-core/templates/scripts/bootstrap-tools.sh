@@ -6,7 +6,7 @@
 #             必需基础，缺失时给出手动安装指引（脚本不自动装，避免动系统级工具链）。
 #   tools   : 可安全自动安装的独立工具（npm install -D / pip install / go install / rustup add /
 #             cargo install 类）。check 模式检测，install 模式自动执行安装命令。
-#   project : 项目内【声明】组件——Maven/Gradle 插件（checkstyle/jacoco/pmd/spotbugs…）、
+#   project : 项目内【声明】组件——Maven/Gradle 插件（p3c-pmd/jacoco/pmd/spotbugs…）、
 #             测试与运行库（assertj、spring-boot-starter-actuator…）、package.json devDependencies。
 #             只能检测是否已在构建文件中声明 + 输出合入指引，绝不自动改写 pom.xml / build.gradle /
 #             package.json / composer.json（自动改构建配置的副作用不可控，属于规范流程范畴）。

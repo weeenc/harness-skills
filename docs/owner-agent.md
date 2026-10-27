@@ -67,7 +67,7 @@ Owner Agent 是**参数化模板**渲染的产物。`apply-harness` 技能检测
 | `{{BUILD_TOOL}}` | `Maven 3.9+` |
 | `{{TEST_FRAMEWORK}}` | `JUnit 5 + Mockito + AssertJ` |
 | `{{COV_TOOL}}` | `JaCoCo` |
-| `{{LINT_TOOL}}` | `Checkstyle + PMD + SpotBugs` |
+| `{{LINT_TOOL}}` | `p3c-pmd + PMD + SpotBugs` |
 | `{{ARCH_TEST_TOOL}}` | `ArchUnit` |
 | `{{DB_ACCESS}}` | `MyBatis-Plus / JPA + Flyway` |
 

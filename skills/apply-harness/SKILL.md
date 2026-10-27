@@ -321,7 +321,7 @@ disable-model-invocation: true
 | `{{ARCH_REVIEW_CMD}}` | 架构审查命令，如 `/arch-review`、`/arch-review-python`                                            |
 | `{{LANGUAGE}}` | 语言名，如 `Java`、`Python`、`Go`、`Rust`、`PHP`、`Frontend`                                  |
 | `{{TEST_FRAMEWORK}}` | 测试框架，如 `JUnit 5 + Mockito`                                                          |
-| `{{LINT_TOOL}}` | 代码规范检查工具，如 `Checkstyle + PMD`                                                      |
+| `{{LINT_TOOL}}` | 代码规范检查工具，如 `p3c-pmd + PMD`                                                      |
 | `{{RACE_DETECT_ARG}}` | 竞态检测参数（无竞态检测能力的语言为 `空`）                                                    |
 | `{{VET_CMD}}` | 静态分析命令，如 `go vet ./...`                                                              |
 | `{{ASSERT_LIB}}` | 断言库，如 `AssertJ`                                                                          |
@@ -342,8 +342,8 @@ disable-model-invocation: true
 
 | 语言/构建 | `{{DEP_RUNNERS}}` | `{{DEP_TOOLS}}`（多行条目） | `{{DEP_PROJECT}}`（多行条目） |
 |---|---|---|---|
-| Java · Maven | `mvn` | 空 | `lint\|maven-checkstyle-plugin\|pom.xml\|maven-checkstyle-plugin\|在 <build><plugins> 添加 maven-checkstyle-plugin 并配置 configLocation`<br>`lint\|maven-pmd-plugin\|pom.xml\|maven-pmd-plugin\|在 <build><plugins> 添加 maven-pmd-plugin`<br>`vet\|spotbugs-maven-plugin\|pom.xml\|spotbugs-maven-plugin\|在 <build><plugins> 添加 spotbugs-maven-plugin`<br>`cov\|jacoco-maven-plugin\|pom.xml\|jacoco-maven-plugin\|添加 jacoco-maven-plugin 并绑定 prepare-agent/report`<br>`cov\|assertj-core\|pom.xml\|assertj-core\|在 <dependencies> 添加 org.assertj:assertj-core（test scope）`<br>`all\|spring-boot-starter-actuator\|pom.xml\|spring-boot-starter-actuator\|在 <dependencies> 添加 spring-boot-starter-actuator（供 /actuator/health）` |
-| Java · Gradle | `./gradlew` | 空 | `lint\|checkstyle(plugin)\|build.gradle\|checkstyle\|在 build.gradle 应用 checkstyle 插件（sourceSets 配置）`<br>`cov\|jacoco(plugin)\|build.gradle\|jacoco\|应用 jacoco 插件并配置 jacocoTestReport`<br>`cov\|assertj-core\|build.gradle\|assertj\|添加 testImplementation("org.assertj:assertj-core")`<br>`all\|spring-boot-starter-actuator\|build.gradle\|actuator\|添加 implementation("org.springframework.boot:spring-boot-starter-actuator")` |
+| Java · Maven | `mvn` | 空 | `lint\|maven-pmd-plugin\|pom.xml\|maven-pmd-plugin\|在 <build><plugins> 添加 maven-pmd-plugin 并配置 p3c-pmd 规则集`<br>`lint\|p3c-pmd\|pom.xml\|p3c-pmd\|在 maven-pmd-plugin 的 dependencies 中添加 com.alibaba.p3c:p3c-pmd`<br>`vet\|spotbugs-maven-plugin\|pom.xml\|spotbugs-maven-plugin\|在 <build><plugins> 添加 spotbugs-maven-plugin`<br>`cov\|jacoco-maven-plugin\|pom.xml\|jacoco-maven-plugin\|添加 jacoco-maven-plugin 并绑定 prepare-agent/report`<br>`cov\|assertj-core\|pom.xml\|assertj-core\|在 <dependencies> 添加 org.assertj:assertj-core（test scope）`<br>`all\|spring-boot-starter-actuator\|pom.xml\|spring-boot-starter-actuator\|在 <dependencies> 添加 spring-boot-starter-actuator（供 /actuator/health）` |
+| Java · Gradle | `./gradlew` | 空 | `lint\|pmd(plugin)\|build.gradle\|id[[:space:]]*[\"']pmd[\"']\|应用 Gradle pmd 插件并配置 p3c-pmd 规则集`<br>`lint\|p3c-pmd\|build.gradle\|com.alibaba.p3c:p3c-pmd\|添加 pmd("com.alibaba.p3c:p3c-pmd:<version>")`<br>`cov\|jacoco(plugin)\|build.gradle\|jacoco\|应用 jacoco 插件并配置 jacocoTestReport`<br>`cov\|assertj-core\|build.gradle\|assertj\|添加 testImplementation("org.assertj:assertj-core")`<br>`all\|spring-boot-starter-actuator\|build.gradle\|actuator\|添加 implementation("org.springframework.boot:spring-boot-starter-actuator")` |
 | Python | `python` `pip` | `lint\|flake8\|pip install flake8`<br>`lint\|black\|pip install black`<br>`lint\|isort\|pip install isort`<br>`vet\|mypy\|pip install mypy`<br>`cov\|pytest-cov\|pip install pytest-cov` | 空（工具经 pip 安装即就绪，无项目声明物） |
 | Go | `go` | `lint\|golangci-lint\|go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest`<br>`vet\|staticcheck\|go install honnef.co/go/tools/cmd/staticcheck@latest` | 空 |
 | Frontend | `npm` | `lint\|eslint\|npm install -D eslint`<br>`lint\|prettier\|npm install -D prettier`<br>`vet\|vue-tsc\|npm install -D vue-tsc`<br>`cov\|c8\|npm install -D c8`<br>`all\|vitest\|npm install -D vitest` | `all\|eslint-config（可选）\|package.json\|eslint\|在 devDependencies 声明 eslint 相关包（npm install -D 即写入）` |
@@ -593,7 +593,7 @@ mkdir -p .claude/skills/
 4. **配置门禁依赖与阈值**：创建 `.harness/gate-config.json`，如 `{"coverage_threshold": 80}`（缺省 80，被 `coverage.sh` 读取）。门禁依赖（运行器/工具/项目组件声明）已渲染进 `bootstrap-tools.sh` 数组，首次门禁触发前运行 `bash .harness/scripts/bootstrap-tools.sh check all` 体检：
    - 全 `[OK]` → 门禁可真实执行；
    - 有 `[MISS]` → `bash .harness/scripts/bootstrap-tools.sh install all` 自动安装独立工具（npm/pip/go/cargo 类）后再检；
-   - 有 `[GUIDE]` → **项目内插件/库未声明**（如 Maven 缺 checkstyle/jacoco 插件、缺 assertj/actuator 依赖），按指引合入 pom.xml / build.gradle / package.json，**门禁脚本不会自动改写构建配置**——这是规范流程（`harness-standard` / 人工）的范畴。
+   - 有 `[GUIDE]` → **项目内插件/库未声明**（如 Maven 缺 PMD 插件/p3c-pmd 规则或 jacoco 插件、缺 assertj/actuator 依赖），按指引合入 pom.xml / build.gradle / package.json，**门禁脚本不会自动改写构建配置**——这是规范流程（`harness-standard` / 人工）的范畴。
 
 ```
 .harness/
@@ -661,47 +661,47 @@ mkdir -p .claude/skills/
 
 ### Java — Spring Boot + Maven（默认）
 
-| 参数 | 值                                           |
-|------|---------------------------------------------|
-| `{{LANGUAGE}}` | `Java`                                      |
-| `{{LANGUAGE_DESC}}` | Java、Spring Boot、多模块 Maven 架构               |
-| `{{LANGUAGE_RUNTIME}}` | JDK 21 LTS                                  |
-| `{{FRAMEWORK_VER}}` | Spring Boot 3.x+                            |
-| `{{BUILD_TOOL}}` | Maven 3.9+                                  |
-| `{{TEST_FRAMEWORK}}` | JUnit 5 + Mockito + AssertJ                 |
-| `{{COV_TOOL}}` | JaCoCo (核心逻辑 ≥80%)                          |
-| `{{LINT_TOOL}}` | Checkstyle + PMD + SpotBugs                 |
-| `{{ARCH_TEST_TOOL}}` | ArchUnit                                    |
-| `{{DB_ACCESS}}` | MyBatis-Plus / JPA + Flyway                 |
-| `{{LANG_TAG}}` | `-java`                                     |
-| `{{HARNESS_ME_NAME}}` | `/harness-me`                               |
-| `{{HARNESSING_CMD}}` | `/harnessing`                               |
-| `{{BUILD_CMD}}` | `mvn compile`                               |
-| `{{TEST_CMD}}` | `mvn test`                                  |
-| `{{LINT_CMD}}` | `mvn checkstyle:check`                      |
-| `{{DEV_CMD}}` | `mvn spring-boot:run`                       |
-| `{{DOCSTYLE}}` | `Javadoc`                                   |
-| `{{FILE_LIMIT}}` | `500`                                       |
+| 参数 | 值                                      |
+|------|----------------------------------------|
+| `{{LANGUAGE}}` | `Java`                                 |
+| `{{LANGUAGE_DESC}}` | Java、Spring Boot、多模块 Maven 架构          |
+| `{{LANGUAGE_RUNTIME}}` | JDK 21 LTS                             |
+| `{{FRAMEWORK_VER}}` | Spring Boot 3.x+                       |
+| `{{BUILD_TOOL}}` | Maven 3.9+                             |
+| `{{TEST_FRAMEWORK}}` | JUnit 5 + Mockito + AssertJ            |
+| `{{COV_TOOL}}` | JaCoCo (核心逻辑 ≥80%)                     |
+| `{{LINT_TOOL}}` | p3c-pmd + PMD + SpotBugs           |
+| `{{ARCH_TEST_TOOL}}` | ArchUnit                               |
+| `{{DB_ACCESS}}` | MyBatis-Plus / JPA + Flyway            |
+| `{{LANG_TAG}}` | `-java`                                |
+| `{{HARNESS_ME_NAME}}` | `/harness-me`                          |
+| `{{HARNESSING_CMD}}` | `/harnessing`                          |
+| `{{BUILD_CMD}}` | `mvn compile`                          |
+| `{{TEST_CMD}}` | `mvn test`                             |
+| `{{LINT_CMD}}` | `mvn pmd:check`                 |
+| `{{DEV_CMD}}` | `mvn spring-boot:run`                  |
+| `{{DOCSTYLE}}` | `Javadoc`                              |
+| `{{FILE_LIMIT}}` | `500`                                  |
 | `{{ARCH_LAYER}}` | 模块间仅通过接口通信，依赖方向 `common ← service ← server` |
-| `{{TEST_NAMING}}` | `method_should_x_when_y`                    |
-| `{{MOCK_LIB}}` | `Mockito`                                   |
-| `{{COV_CMD}}` | `mvn jacoco:report`                         |
-| `{{DEBUG_TOOL}}` | 调试器 / `jdb`                                 |
-| `{{ARCH_REVIEW_CMD}}` | `/arch-review`                              |
-| `{{ARCH_TEST_CMD}}` | 架构约束测试命令                                    |
-| `{{SECURITY_CMD}}` | 安全扫描命令                                      |
-| `{{INTEGRATION_CMD}}` | 集成测试命令                                      |
-| `{{RUN_CMD}}` | 启动服务命令                                      |
-| `{{HEALTH_CHECK_CMD}}` | 健康检查命令                                      |
-| `{{HEALTH_ENDPOINT}}` | 健康检查端点                                      |
-| `{{METRICS_ENDPOINT}}` | 指标端点                                        |
-| `{{VET_CMD}}` | 静态分析命令（实际合并到 LINT_CMD）                      |
-| `{{DEP_CMD}}` | 依赖管理命令：`mvn dependency:tree`                |
-| `{{ORM_TOOL}}` | ORM 框架：MyBatis-Plus / JPA                   |
-| `{{TYPE_CHECK_TOOL}}` | 类型检查工具：javac（编译时检查）                         |
-| `{{TYPE_CHECK_CMD}}` | 类型检查命令：`{{BUILD_CMD}}`                      |
-| `{{ASSERT_LIB}}` | 断言库：AssertJ                                 |
-| `{{RACE_DETECT_ARG}}` | 竞态检测参数：空                                    |
+| `{{TEST_NAMING}}` | `method_should_x_when_y`               |
+| `{{MOCK_LIB}}` | `Mockito`                              |
+| `{{COV_CMD}}` | `mvn jacoco:report`                    |
+| `{{DEBUG_TOOL}}` | 调试器 / `jdb`                            |
+| `{{ARCH_REVIEW_CMD}}` | `/arch-review`                         |
+| `{{ARCH_TEST_CMD}}` | 架构约束测试命令                               |
+| `{{SECURITY_CMD}}` | 安全扫描命令                                 |
+| `{{INTEGRATION_CMD}}` | 集成测试命令                                 |
+| `{{RUN_CMD}}` | 启动服务命令                                 |
+| `{{HEALTH_CHECK_CMD}}` | 健康检查命令                                 |
+| `{{HEALTH_ENDPOINT}}` | 健康检查端点                                 |
+| `{{METRICS_ENDPOINT}}` | 指标端点                                   |
+| `{{VET_CMD}}` | 静态分析命令（实际合并到 LINT_CMD）                 |
+| `{{DEP_CMD}}` | 依赖管理命令：`mvn dependency:tree`           |
+| `{{ORM_TOOL}}` | ORM 框架：MyBatis-Plus / JPA              |
+| `{{TYPE_CHECK_TOOL}}` | 类型检查工具：javac（编译时检查）                    |
+| `{{TYPE_CHECK_CMD}}` | 类型检查命令：`{{BUILD_CMD}}`                 |
+| `{{ASSERT_LIB}}` | 断言库：AssertJ                            |
+| `{{RACE_DETECT_ARG}}` | 竞态检测参数：空                               |
 
 ### Java — Spring Boot + Gradle
 
@@ -713,7 +713,7 @@ mkdir -p .claude/skills/
 | `{{BUILD_TOOL}}` | Gradle 8.x（Gradle Wrapper） |
 | `{{BUILD_CMD}}` | `./gradlew build` |
 | `{{TEST_CMD}}` | `./gradlew test` |
-| `{{LINT_CMD}}` | `./gradlew checkstyleMain` |
+| `{{LINT_CMD}}` | `./gradlew pmdMain` |
 | `{{DEV_CMD}}` | `./gradlew bootRun` |
 | `{{COV_CMD}}` | `./gradlew jacocoTestReport` |
 
@@ -728,7 +728,7 @@ mkdir -p .claude/skills/
 | `{{BUILD_TOOL}}` | Maven 3.9+                                         |
 | `{{TEST_FRAMEWORK}}` | JUnit 5 + Mockito + AssertJ                        |
 | `{{COV_TOOL}}` | JaCoCo (核心逻辑 ≥80%)                                 |
-| `{{LINT_TOOL}}` | Checkstyle + PMD + SpotBugs                        |
+| `{{LINT_TOOL}}` | p3c-pmd + PMD + SpotBugs                        |
 | `{{ARCH_TEST_TOOL}}` | ArchUnit                                           |
 | `{{DB_ACCESS}}` | Hibernate Panache / JPA + Flyway                   |
 | `{{LANG_TAG}}` | `-java`                                            |
@@ -736,7 +736,7 @@ mkdir -p .claude/skills/
 | `{{HARNESSING_CMD}}` | `/harnessing`                                      |
 | `{{BUILD_CMD}}` | `mvn compile`                                      |
 | `{{TEST_CMD}}` | `mvn test`                                         |
-| `{{LINT_CMD}}` | `mvn checkstyle:check`                             |
+| `{{LINT_CMD}}` | `mvn pmd:check`                             |
 | `{{DEV_CMD}}` | `mvn quarkus:dev`                                  |
 | `{{DOCSTYLE}}` | `Javadoc`                                          |
 | `{{FILE_LIMIT}}` | `500`                                              |
@@ -755,7 +755,7 @@ mkdir -p .claude/skills/
 | `{{BUILD_TOOL}}` | Gradle 8.x（Gradle Wrapper） |
 | `{{BUILD_CMD}}` | `./gradlew build` |
 | `{{TEST_CMD}}` | `./gradlew test` |
-| `{{LINT_CMD}}` | `./gradlew checkstyleMain` |
+| `{{LINT_CMD}}` | `./gradlew pmdMain` |
 | `{{DEV_CMD}}` | `./gradlew quarkusDev` |
 | `{{COV_CMD}}` | `./gradlew jacocoTestReport` |
 
@@ -770,7 +770,7 @@ mkdir -p .claude/skills/
 | `{{BUILD_TOOL}}` | Maven 3.9+                              |
 | `{{TEST_FRAMEWORK}}` | JUnit 5 + Mockito                       |
 | `{{COV_TOOL}}` | JaCoCo (核心逻辑 ≥80%)                      |
-| `{{LINT_TOOL}}` | Checkstyle + PMD + SpotBugs             |
+| `{{LINT_TOOL}}` | p3c-pmd + PMD + SpotBugs             |
 | `{{ARCH_TEST_TOOL}}` | ArchUnit                                |
 | `{{DB_ACCESS}}` | Micronaut Data + Flyway                 |
 | `{{LANG_TAG}}` | `-java`                                 |
@@ -778,7 +778,7 @@ mkdir -p .claude/skills/
 | `{{HARNESSING_CMD}}` | `/harnessing`                           |
 | `{{BUILD_CMD}}` | `mvn compile`                           |
 | `{{TEST_CMD}}` | `mvn test`                              |
-| `{{LINT_CMD}}` | `mvn checkstyle:check`                  |
+| `{{LINT_CMD}}` | `mvn pmd:check`                  |
 | `{{DEV_CMD}}` | `mvn mn:run`                            |
 | `{{DOCSTYLE}}` | `Javadoc`                               |
 | `{{FILE_LIMIT}}` | `500`                                   |
@@ -800,7 +800,7 @@ mkdir -p .claude/skills/
 | `{{BUILD_TOOL}}` | Maven 3.9+                      |
 | `{{TEST_FRAMEWORK}}` | JUnit 5 + Mockito + Vert.x Test |
 | `{{COV_TOOL}}` | JaCoCo (核心逻辑 ≥80%)              |
-| `{{LINT_TOOL}}` | Checkstyle + PMD + SpotBugs     |
+| `{{LINT_TOOL}}` | p3c-pmd + PMD + SpotBugs     |
 | `{{ARCH_TEST_TOOL}}` | ArchUnit                        |
 | `{{DB_ACCESS}}` | Vert.x JDBC/MySQL 客户端           |
 | `{{LANG_TAG}}` | `-java`                         |
@@ -808,7 +808,7 @@ mkdir -p .claude/skills/
 | `{{HARNESSING_CMD}}` | `/harnessing`                   |
 | `{{BUILD_CMD}}` | `mvn compile`                   |
 | `{{TEST_CMD}}` | `mvn test`                      |
-| `{{LINT_CMD}}` | `mvn checkstyle:check`          |
+| `{{LINT_CMD}}` | `mvn pmd:check`          |
 | `{{DEV_CMD}}` | `mvn vertx:run`                 |
 | `{{DOCSTYLE}}` | `Javadoc`                       |
 | `{{FILE_LIMIT}}` | `500`                           |
@@ -830,7 +830,7 @@ mkdir -p .claude/skills/
 | `{{BUILD_TOOL}}` | Maven 3.9+                                 |
 | `{{TEST_FRAMEWORK}}` | JUnit 5 + Mockito + AssertJ                |
 | `{{COV_TOOL}}` | JaCoCo (核心逻辑 ≥80%)                         |
-| `{{LINT_TOOL}}` | Checkstyle + PMD + SpotBugs                |
+| `{{LINT_TOOL}}` | p3c-pmd + PMD + SpotBugs                |
 | `{{ARCH_TEST_TOOL}}` | ArchUnit                                   |
 | `{{DB_ACCESS}}` | JDBI / Hibernate + Flyway                  |
 | `{{LANG_TAG}}` | `-java`                                    |
@@ -838,7 +838,7 @@ mkdir -p .claude/skills/
 | `{{HARNESSING_CMD}}` | `/harnessing`                              |
 | `{{BUILD_CMD}}` | `mvn compile`                              |
 | `{{TEST_CMD}}` | `mvn test`                                 |
-| `{{LINT_CMD}}` | `mvn checkstyle:check`                     |
+| `{{LINT_CMD}}` | `mvn pmd:check`                     |
 | `{{DEV_CMD}}` | `java -jar target/*.jar server config.yml` |
 | `{{DOCSTYLE}}` | `Javadoc`                                  |
 | `{{FILE_LIMIT}}` | `500`                                      |
@@ -860,7 +860,7 @@ mkdir -p .claude/skills/
 | `{{BUILD_TOOL}}` | Maven 3.9+                                         |
 | `{{TEST_FRAMEWORK}}` | JUnit 5 + Mockito + AssertJ                        |
 | `{{COV_TOOL}}` | JaCoCo (核心逻辑 ≥80%)                                 |
-| `{{LINT_TOOL}}` | Checkstyle + PMD + SpotBugs                        |
+| `{{LINT_TOOL}}` | p3c-pmd + PMD + SpotBugs                        |
 | `{{ARCH_TEST_TOOL}}` | ArchUnit                                           |
 | `{{DB_ACCESS}}` | MyBatis-Plus / JPA + Flyway                        |
 | `{{LANG_TAG}}` | `-java`                                            |
@@ -868,7 +868,7 @@ mkdir -p .claude/skills/
 | `{{HARNESSING_CMD}}` | `/harnessing`                                      |
 | `{{BUILD_CMD}}` | `mvn compile`                                      |
 | `{{TEST_CMD}}` | `mvn test`                                         |
-| `{{LINT_CMD}}` | `mvn checkstyle:check`                             |
+| `{{LINT_CMD}}` | `mvn pmd:check`                             |
 | `{{DEV_CMD}}` | `mvn tomcat7:run` / 部署到外部 Servlet 容器               |
 | `{{DOCSTYLE}}` | `Javadoc`                                          |
 | `{{FILE_LIMIT}}` | `500`                                              |
@@ -1472,14 +1472,14 @@ mkdir -p .claude/skills/
 | `{{LANGUAGE_RUNTIME}}` | JDK 21 LTS                   |
 | `{{TEST_FRAMEWORK}}` | JUnit 5 + Mockito + AssertJ  |
 | `{{COV_TOOL}}` | JaCoCo (核心逻辑 ≥80%)           |
-| `{{LINT_TOOL}}` | Checkstyle + PMD + SpotBugs  |
+| `{{LINT_TOOL}}` | p3c-pmd + PMD + SpotBugs  |
 | `{{ARCH_TEST_TOOL}}` | ArchUnit                     |
 | `{{LANG_TAG}}` | `-java`                      |
 | `{{HARNESS_ME_NAME}}` | `/harness-me`                |
 | `{{HARNESSING_CMD}}` | `/harnessing`                |
 | `{{BUILD_CMD}}` | `mvn compile`                |
 | `{{TEST_CMD}}` | `mvn test`                   |
-| `{{LINT_CMD}}` | `mvn checkstyle:check`       |
+| `{{LINT_CMD}}` | `mvn pmd:check`       |
 | `{{COV_CMD}}` | `mvn jacoco:report`          |
 | `{{DOCSTYLE}}` | `Javadoc`                    |
 | `{{FILE_LIMIT}}` | `500`                        |

@@ -10,7 +10,7 @@ description: Java 语言规范包 — 编码规范、工程结构（SDD-TDD/开�
 - **基线框架**: Spring Boot / Spring MVC / Quarkus / Micronaut / Vert.x / Dropwizard / Dubbo / Spring Cloud Alibaba / Spring AI / Spring AI Alibaba / AgentScope Java / LangChain4j / Semantic Kernel / Genkit Java（JDK 21 LTS）
 - **构建工具**: Maven 3.9+ / Gradle 8+
 - **测试框架**: JUnit 5 + Mockito + AssertJ
-- **代码规范**: 阿里巴巴 Java 开发手册 + Checkstyle + PMD + SpotBugs
+- **代码规范**: 阿里巴巴 Java 开发手册 + p3c-pmd + PMD + SpotBugs
 - **架构约束**: ArchUnit
 
 包含 rules（2 个语言特有 + 3 个通用来自 harness-core）和框架专属 skills（4 个）。流水线技能（10 个）由 `apply-harness` 从 `harness-core/skills/` 模板渲染，语言包不再维护副本。

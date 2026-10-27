@@ -13,7 +13,7 @@ Harness Java 语言规范包为 Java 项目提供完整的开发规范体系，�
 | **构建工具** | Maven 3.9+ / Gradle 8.x（Gradle Wrapper） |
 | **测试框架** | JUnit 5 + Mockito + AssertJ |
 | **覆盖率工具** | JaCoCo（核心逻辑覆盖率 ≥80%） |
-| **代码规范** | 阿里巴巴 Java 开发手册 + Checkstyle + PMD |
+| **代码规范** | 阿里巴巴 Java 开发手册 + p3c-pmd + PMD |
 | **架构约束** | ArchUnit |
 | **安全扫描** | SpotBugs + OWASP Dependency Check |
 | **数据库** | MyBatis-Plus / JPA / Hibernate Panache + Flyway（AI 框架用向量库 + 元数据存储） |
