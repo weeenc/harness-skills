@@ -61,7 +61,6 @@
 
 ```bash
 # 在任意项目根目录执行
-# 仓库在 gitcode.com。若仓库为私有，请用 SSH URL：
 npx skills@latest add git@github.com:weeenc/harness-skills.git
 
 # 在 AI 对话中键入

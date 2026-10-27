@@ -6,6 +6,8 @@
 
 > 本项目维护 skill 定义、规则、模板及使用文档。PRD 平台资料、专栏文章和分享产物已迁至同级 `prd-ingestion/` 项目。
 
+独立 Git 仓库的全栈工作空间通过 `repo-discovery` 与 `workspace-orchestrator` 协调：前端、后端继续各自维护 Harness，工作空间层记录仓库映射、跨仓变更、契约版本和联合门禁。
+
 ## 什么是 Harness Engineering？
 
 Harness 是一个**人类设计约束、AI 写代码、机器验证**的开发方法论。核心是 **Owner Agent**（应用负责人智能体），它编排 6 阶段流水线：

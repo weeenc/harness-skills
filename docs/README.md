@@ -83,6 +83,8 @@
 | `harness-ship` | 发布工作流 | [文档](skills/harness-ship.md) |
 | `harness-changelog` | 变更日志维护 | [文档](skills/harness-changelog.md) |
 | `harness-standard` | 规范库管理 | [文档](skills/harness-standard.md) |
+| `repo-discovery` | 多仓库发现与需求路由 | [文档](skills/repo-discovery.md) |
+| `workspace-orchestrator` | 跨仓全栈变更编排 | [文档](skills/workspace-orchestrator.md) |
 | `legacy-bootstrap` | 老系统冷启动（submodule/清洗/采访稿） | [文档](skills/legacy-bootstrap.md) |
 | `knowledge-health` | 知识健康检查（重复/冲突/失效链接） | [文档](skills/knowledge-health.md) |
 
@@ -92,6 +94,12 @@
 |------|------|------|
 | `apply-harness` | 一键应用 Harness 开发规范 | [文档](skills/apply-harness.md) |
 | `install-skill` | 注册技能到当前 AI 工具 | [文档](skills/install-skill.md) |
+
+## 多仓库工作空间
+
+| 文档 | 说明 |
+|------|------|
+| [独立 Git 仓库的全栈开发支持](skills/multi-repo-development.md) | coordinator、仓库级 Harness、契约和联合门禁的落地方式 |
 
 ## 工具包技能（自动注入）
 

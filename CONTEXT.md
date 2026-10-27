@@ -21,6 +21,10 @@
 | AC | 验收条件（Acceptance Criteria） | 每条 AC 对应一个测试 |
 | 垂直切片 | 一次只做一个 Red-Green-Refactor 循环，不批量 | |
 | 战争迷雾 | 只规划当前层，下一层做标记，迷雾层不碰 | |
+| 工作空间协调层 | 位于多个独立 Git 仓库之上的编排层，记录 repo-map、workspace change、契约版本与联合门禁 | 不复制仓库级 Harness 规则 |
+| workspace change | 跨仓库需求的整体变更卡，关联多个仓库的 local change | 只有 required 仓库和联合验证都完成才算 done |
+| local change | 某个独立 Git 仓库内执行 6 阶段流水线的变更卡 | 通过 workspace change 关联 |
+| 契约单一来源 | 前后端共同引用的带版本 API/事件/数据契约 | mock、实现和 E2E 必须引用同一版本 |
 
 ## 目录结构
 
@@ -59,6 +63,10 @@ harness-skills/
 ```
 ① harnessing  →  ② coding-skill  →  ③ unit-test-write  →  ④ expert-reviewer  →  ⑤ unit-test-ci  →  ⑥ deploy-verify
 ```
+
+## 多仓库工作空间
+
+多个独立 Git 仓库保持各自的 `.harness/`、Git 历史和本地门禁；工作空间协调层通过 `repo-map.yaml`、workspace change 和联合门禁编排全栈需求。相关技能为 `repo-discovery` 与 `workspace-orchestrator`。
 
 ---
 

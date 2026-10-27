@@ -12,6 +12,19 @@ disable-model-invocation: true
 
 ## 工作流程
 
+### Step 0: 判断单仓库还是多仓库工作空间
+
+在检测语言之前，先判断当前目录是否为工作空间根：
+
+1. 用 `git rev-parse --show-toplevel` 判断当前目录是否是 Git 根；
+2. 扫描一层及必要的业务子目录，识别包含 `.git` 的独立仓库；
+3. 若发现两个及以上独立 Git 仓库，标记为 **multi-repo workspace**：分别在每个代码仓库执行本技能，并在工作空间层使用 `repo-discovery` 与 `workspace-orchestrator`；
+4. 不要把父目录的 `.harness/` 复制到所有子仓库，也不要从父目录推断子仓库的 `git diff`、构建命令或门禁状态。
+
+多仓库工作空间的协调文件为 `.harness/repo-map.yaml` 和 `.harness/changes/WS-*/workspace-change.md`。工作空间模式只生成协调层资产（repo-map、workspace change 模板、`repo-discovery`、`workspace-orchestrator` 和联合门禁入口），不生成语言 Owner、语言规则或把一个子仓库当成项目根。工作空间根目录没有 Git 时，应提示创建独立 coordinator 仓库，以便这些文件可版本化。
+
+进入工作空间模式后，先在 coordinator 根目录初始化 `.harness/` 的协调资产，再分别进入每个代码仓库执行后续语言检测和本地 Harness 初始化；不要在父目录继续执行单仓库的 Step 1~7。
+
 ### Step 1: 检测项目语言与框架
 
 扫描项目根目录，按优先级检测。先识别语言，再从语言特征中识别具体框架和构建工具。
@@ -265,6 +278,8 @@ disable-model-invocation: true
     - `harness-ship` — 发布工作流（版本/tag/CI/CD，留人确认）
     - `harness-changelog` — 变更日志（可追溯条目）
     - `harness-standard` — 规范库管理（新增/修订/归档/审批）
+    - `repo-discovery` — 多仓库发现、职责匹配与需求路由
+    - `workspace-orchestrator` — 跨仓全栈变更编排、联合门禁与发布对账
     - `legacy-bootstrap` — 老系统冷启动（submodule 关联 src/、清洗 SKILL、采访稿）
     - `knowledge-health` — 知识健康检查（重复/冲突/失效链接/无来源结论）
 
@@ -378,6 +393,8 @@ disable-model-invocation: true
     ├── harness-ship/              # 发布工作流（版本/tag/CI/CD，留人确认）
     ├── harness-changelog/         # 变更日志（可追溯条目）
     ├── harness-standard/          # 规范库管理（新增/修订/归档/审批）
+    ├── repo-discovery/            # 多仓库发现与需求路由
+    ├── workspace-orchestrator/    # 跨仓全栈变更编排
     ├── legacy-bootstrap/          # 老系统冷启动（submodule 关联 src/、清洗 SKILL、采访稿）
     └── knowledge-health/          # 知识健康检查（重复/冲突/失效链接/无来源结论）
 ```
