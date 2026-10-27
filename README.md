@@ -64,7 +64,7 @@ AI 自动检测项目语言与框架（Java / Python / Go / Rust / PHP / Fronten
 
 | 语言 | 支持框架 | 构建工具 | 测试框架 | 代码规范 |
 |------|---------|---------|---------|---------|
-| **Java** | Spring Boot / Spring Cloud Alibaba / Spring MVC / Quarkus / Micronaut / Vert.x / Dropwizard / Dubbo / Spring AI / Spring AI Alibaba / LangChain4j / Semantic Kernel / AgentScope Java / Genkit Java | Maven / Gradle | JUnit 5 + Mockito | Checkstyle + PMD |
+| **Java** | Spring Boot / Spring Cloud Alibaba / Spring MVC / Quarkus / Micronaut / Vert.x / Dropwizard / Dubbo / Spring AI / Spring AI Alibaba / LangChain4j / Semantic Kernel / AgentScope Java / Genkit Java | Maven / Gradle | JUnit 5 + Mockito | p3c-pmd + PMD |
 | **Python** | Django / FastAPI / Flask / Tornado / TensorFlow / PyTorch / Keras / scikit-learn / XGBoost / LangChain / LangGraph / CrewAI / PydanticAI / Hugging Face Transformers / OpenAI Agents SDK | pip / Poetry / uv | pytest（Django 用 TestCase） | flake8 + mypy + black |
 | **Go** | Gin / go-zero / Echo / Fiber / Chi / Beego / Go-Kit / Go-Kratos / Gorilla Mux / Kitex / Hertz / Iris / Macaron / Tango / GoFrame / LangChainGo / eino / ADK-Go / tRPC-Agent-Go / Genkit / Anyi | go mod | go test + testify | golangci-lint + go vet |
 | **Rust** | Axum / Actix Web / Rocket / Warp / Poem / Loco / Salvo / Tauri / Iced / egui / Dioxus / Candle / Burn / tch-rs / ort / rlx-models / ADK-Rust / Blockcell / vLLM | cargo | cargo test + rstest | clippy + rustfmt |

@@ -7,7 +7,7 @@
 | 模式 | 触发时机 | 角色 |
 |---|---|---|
 | `check-style.sh <file>`（单文件增量） | 每次写文件后（PostToolUse/AfterTool） | **快检**：行数、尾随空白、TODO/FIXME、硬编码凭据，秒级出红灯 |
-| `check-style.sh all [id]`（全量深度） | Stop/会话结束/技能出口/CI | **深度**：跑 `{{LINT_CMD}}`（checkstyle 等）+ 全量行数扫描 + 证据落盘 |
+| `check-style.sh all [id]`（全量深度） | Stop/会话结束/技能出口/CI | **深度**：跑 `{{LINT_CMD}}`（p3c-pmd 等）+ 全量行数扫描 + 证据落盘 |
 
 ## 二、调用方式
 
@@ -17,7 +17,7 @@ bash .harness/scripts/check-style.sh all <change-id>   # 全量深度（Stop/CI 
 # 等价总入口： harness-gate.sh check-style <file|all> [change-id]
 ```
 
-渲染时按语言注入：`LINT_CMD`（如 mvn checkstyle:check）、`LINT_TOOL`（如 checkstyle）、
+渲染时按语言注入：`LINT_CMD`（如 mvn pmd:check）、`LINT_TOOL`（如 p3c-pmd）、
 `FILE_LIMIT`（默认 800 行）。
 
 ## 三、运行原理
@@ -39,7 +39,7 @@ bash .harness/scripts/check-style.sh all <change-id>   # 全量深度（Stop/CI 
 1. **深度 lint**（LINT_CMD）：
    - `LINT_CMD` 未配置/命令不可用 → `[DEGRADED]`（rc=2 路径，降级人工核对）；
    - 底层依赖未就绪（`bootstrap-tools.sh check lint` rc≠0）→ `[DEGRADED]` + 一键复检指引，
-     避免"缺 checkstyle 插件导致的 BUILD FAILURE 被误判为风格违规"；
+     避免"缺 PMD 插件或 p3c-pmd 规则导致的 BUILD FAILURE 被误判为风格违规"；
    - 真跑 `eval "$LINT_CMD"` 失败 → `[FAIL] …检测到违规`。
 2. **全量行数上限扫描**：`git ls-files`（排除 `.harness/` 与 vendor/node_modules/target/dist/build/.venv）逐文件超限 → `[FAIL]`。
 3. 汇总：`failed` → rc=1；否则 `degraded` → rc=2；否则 `[PASS] check-style 全量通过` → rc=0。
