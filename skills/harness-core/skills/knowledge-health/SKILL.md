@@ -15,7 +15,7 @@ description: 知识健康检查——扫描 .harness/wiki/ 与 .harness/tech/，
 
 - 定期（每迭代 / 每月）知识库体检
 - 发现 Agent 检索到矛盾或过时的知识
-- 知识回流（archive.md）后核对一致性
+- 知识回流（report.md ⑥知识回流；兼容 archive.md）后核对一致性
 
 ## 2. 检测项
 

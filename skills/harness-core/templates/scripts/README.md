@@ -10,10 +10,10 @@
 ## 调用方式
 
 - **总入口**：`.harness/scripts/harness-gate.sh <gate> [file|all] [change-id]`
-  - `gate`：`check-style` | `static-analysis` | `coverage` | `arch-check` | `security-scan`
+  - `gate`：`check-style` | `static-analysis` | `coverage` | `arch-check` | `security-scan` | `review-check`
   - `[file|all]`：单文件增量检测 或 全量深度检测（缺省 `all`）
-  - `[change-id]`：证据落盘目标（缺省自动选中状态机匹配的 change）
-- **证据落盘**：`.harness/scripts/report.sh <gate> [change-id]`
+  - `[change-id]`：证据落盘目标（缺省仅在唯一活动 change 时自动选中）
+- **证据落盘**：`.harness/scripts/report.sh <gate> [change-id] "rc=N"`
 - **宿主 hooks 触发器**：`.harness/hooks/`（Claude Code 等宿主工具自动调用本层脚本，见 hooks/README.md）
 
 ## 退出码约定（hooks 与技能都依赖）
@@ -31,7 +31,7 @@
 
 1. 输出 `[DEGRADED] <gate> 工具未安装（<tool>），该门禁降级人工核对（依据：<规则文件>）`；
 2. 以退出码 `2` 返回（不算红灯，也不算通过——是"显式降级"）；
-3. 把降级事实写入 `.harness/changes/<id>/gate-<gate>.md`，供 `harness-status` / `harness-retro` 审计。
+3. 把降级事实写入 `.harness/changes/.runtime/<id>/gate-<gate>.md`，阶段结束由技能将命令、版本、rc、关键证据及人工确认写入持久阶段报告。
 
 > 严禁：命令找不到时 `|| true` 静默吞掉、假装通过。
 
@@ -56,3 +56,9 @@
 | PostToolUse（每次写文件后） | `check-style.sh <file>` 增量单文件 | 快速内置检查（行数/尾随空白/TODO/凭据） | 快（<2s） |
 | Stop / 技能出口 | `harness-gate.sh check-style all` + `static-analysis` + `security-scan` | 全量深度（`{{LINT_CMD}}`/`{{VET_CMD}}`） | 中 |
 | ⑤ `unit-test-ci` 门禁 | 全部 gate 全量 | 最全（含 `coverage` / `arch-check`） | 慢（阶段出口跑） |
+
+## 需求报告与运行数据
+
+`report.sh` 每类门禁只更新一个被忽略的运行摘要，只有 rc=0 为 PASS，rc=1/2 分别为 FAIL/DEGRADED，其余及未知为 ERROR。它不会写持久 report.md，也不会覆盖人工签名；旧 gate 文件保留作历史。详细协议见 `.harness/changes/README.md`。
+
+`review-check.sh <id>` 对 compact 卡检查 report.md 的④章节（review_status: complete、审查范围、双轴与引用）；子仓有 report_ref 时检查工作空间共享报告，引用错误不得回退本地旧报告。legacy 卡继续读取 review.md。此检查只验证结构，不代表严重问题为零。

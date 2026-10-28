@@ -34,7 +34,7 @@ process-platform-backend（独立 Git 仓库）
 
 ## 只执行一次 6 阶段流水线
 
-工作空间变更卡是唯一对外状态源。① 需求分析、④ 聚合评审、⑤ 联合 CI、⑥ 发布验证各执行一次；② 编码和③ 测试阶段由编排器把任务分发到前端和后端仓库，分别运行它们的真实构建和测试命令。仓库内的 `change.md` 只保留执行证据，或使用 `repo-execution.md` 记录，不要求用户再次审批或手动推进一套完整状态机。
+工作空间变更卡是唯一对外状态源。① 需求分析、④ 聚合评审、⑤ 联合 CI、⑥ 发布验证各执行一次；② 编码和③ 测试阶段由编排器把任务分发到前端和后端仓库，分别运行它们的真实构建和测试命令。仓库内的 `change.md` 保留本地 id/status、分工和提交关联，以 workspace_ref/report_ref 指向协调层需求与报告，不要求用户再次审批或手动推进一套完整状态机。
 
 实际使用时，在 coordinator 工作空间执行：
 
@@ -66,3 +66,5 @@ process-platform-backend（独立 Git 仓库）
 4. 为工作空间增加 `workspace-change.md` 模板和联合门禁脚本。
 5. 将 `harness-api-mock` 接入契约版本，前端 mock 与后端契约使用同一来源。
 6. 在 CI 中按“契约检查 → 前端/后端本地门禁 → 联合 E2E → 发布对账”执行。
+
+新需求默认 artifact_mode: compact：协调层只保留 workspace-change.md + 六阶段 report.md，子仓各一份执行卡；review-check 读取共享报告，不复制子仓 review.md。临时输出放 changes/.runtime/，不按每次运行保存两仓完整 diff。详见 [变更管理](../change-management.md)。

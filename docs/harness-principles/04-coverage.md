@@ -45,7 +45,7 @@ bash .harness/scripts/coverage.sh [change-id]
 | 覆盖率 < 阈值 | `[FAIL] 覆盖率 62% 低于阈值 80%` + rc=1 | 补测试，CI/出口不过 |
 | 命令执行失败 | `[FAIL] 执行失败或未达标（rc=N）` + rc=1 | 先看日志是构建坏还是真不达标 |
 | 工具没装/依赖缺 | `[DEGRADED] …无法测量覆盖率…` + rc=2 | 按指引装依赖（JaCoCo 等），**绝不静默跳过，也不误判违规** |
-| 解析不出数字 | `[DEGRADED] …请按 COV_TOOL 报告人工核对` + rc=2 | 人肉读报告确认达标后，在 gate-coverage.md 追加复核结论 |
+| 解析不出数字 | `[DEGRADED] …请按 COV_TOOL 报告人工核对` + rc=2 | 人肉读报告确认达标后，在持久 report.md 的③/⑤章节追加复核结论 |
 
 ## 六、与其他文件的关系
 
@@ -53,3 +53,4 @@ bash .harness/scripts/coverage.sh [change-id]
 - 前置依赖：`bootstrap-tools.sh check cov`
 - 调用方：`unit-test-ci-<lang>` 技能 / CI（coverage 只在此处全量跑，hooks 出口不含它，避免每轮回复都跑测试）
 - 证据：`report.sh` → `gate-coverage.md`
+> 新版 report.sh 将 gate 摘要写在 changes/.runtime/<id>/，重复检查只更新固定文件。阶段结束将关键证据与人工确认写 report.md，不提交临时摘要；旧报告保留兼容。详见 [运行摘要协议](08-report.md)。

@@ -23,7 +23,7 @@ disable-model-invocation: true
 
 多仓库工作空间的协调文件为 `.harness/repo-map.yaml` 和 `.harness/changes/WS-*/workspace-change.md`。工作空间模式只生成协调层资产（repo-map、workspace change 模板、`repo-discovery`、`workspace-orchestrator` 和联合门禁入口），不生成语言 Owner、语言规则或把一个子仓库当成项目根。工作空间根目录没有 Git 时，应提示创建独立 coordinator 仓库，以便这些文件可版本化。
 
-进入工作空间模式后，先在 coordinator 根目录初始化 `.harness/` 的协调资产，再分别进入每个代码仓库执行后续语言检测和本地 Harness 初始化；不要在父目录继续执行单仓库的 Step 1~7。
+进入工作空间模式后，先在 coordinator 根目录初始化 `.harness/` 的协调资产（包含 `templates/changes/README.md`、`.gitignore`、workspace-change/local-change/report 模板，以及无需语言参数的 `templates/scripts/report.sh`、`review-check.sh`；已有忽略文件只合并 `/.runtime/`，不覆盖原规则），再分别进入每个代码仓库执行后续语言检测和本地 Harness 初始化；不要在父目录继续执行单仓库的 Step 1~7。
 
 ### Step 1: 检测项目语言与框架
 
@@ -491,16 +491,23 @@ mkdir -p .claude/skills/
 
 ### Step 6: 初始化变更追踪
 
-从 `harness-core/templates/changes/` 复制到 `.harness/changes/`：
+从 `harness-core/templates/changes/` 安装共享产物协议、忽略规则与模板：
 
 ```
 .harness/changes/
+├── README.md                 ← 变更产物协议（compact 默认、legacy 兼容）
+├── .gitignore                ← /.runtime/（已有文件只追加缺失规则）
 └── _TEMPLATE/
-    ├── change.md      ← 变更卡模板
-    ├── review.md      ← 评审报告模板
-    ├── verify.md      ← 部署验证报告模板（含动态事实核验 + traceId/断言回填）
-    └── archive.md     ← 归档 + 知识回流清单模板
+    ├── change.md             ← 单仓需求卡；artifact_mode: compact
+    ├── workspace-change.md   ← 全栈协调卡
+    ├── local-change.md       ← 子仓执行卡；workspace_ref / report_ref
+    ├── report.md             ← 一份报告内记录六阶段和知识回流
+    └── review.md / verify.md / archive.md  ← 仅供 legacy 卡使用
 ```
+
+新需求只实例化卡片；产生阶段结论时再创建 report.md，不复制整个模板目录。单仓每需求最多两份默认持久文档；多仓只有协调层的卡片 + 报告，子仓各一份执行卡。机器摘要、日志、临时快照和按需交接进入 `.harness/changes/.runtime/<id>/`，不会自动提交。不得生成 `<id>/evidence/**/run-*` 或每门禁一份持久 gate 报告。
+
+本步骤不修改 wiki、tech、rules 等其他目录的生成/维护逻辑。已有 change 不删除或自动迁移；旧卡保持兼容，显式迁移时才合并结论、人工签名与证据引用。
 
 ### Step 6.1: 初始化机器可读迭代协议（可选增强）
 
@@ -517,7 +524,7 @@ mkdir -p .claude/skills/
         └── report.md   ← 测试报告（真实证据）
 ```
 
-> 复杂需求可将单文件 `change.md` 扩展为多文件迭代协议，使阶段产物可被机器对账。归档与知识回流统一落在 `.harness/changes/<id>/archive.md`（不随迭代协议拆分）。实例化由需求阶段（`harnessing`）把 `_TEMPLATE/` 复制为 `.harness/iterations/<ITER-ID>/`，并在 `change.md` 的 `iteration:` 字段回填（阶段间接口门禁见 `rules/开发流程规范.md §2.2`）。
+> 复杂需求仍可将单文件 `change.md` 扩展为多文件迭代协议，使阶段产物可被机器对账；iterations 的选用与维护逻辑不变。归档与知识回流落在 compact 的 report.md ⑥章节（legacy 为 archive.md，不随迭代协议拆分）。实例化由需求阶段（`harnessing`）把 `_TEMPLATE/` 复制为 `.harness/iterations/<ITER-ID>/`，并在 `change.md` 的 `iteration:` 字段回填（阶段间接口门禁见 `rules/开发流程规范.md §2.2`）。
 
 ### Step 7: 初始化领域知识库
 
@@ -607,7 +614,7 @@ mkdir -p .claude/skills/
 │   ├── security-scan.sh       安全扫描（{{SECURITY_CMD}} + 内置凭据扫描）
 │   ├── review-check.sh        评审报告结构门禁（双轴节头 + 引用校验）
 │   ├── bootstrap-tools.sh     门禁依赖体检/自举（runners 检测、tools 自动安装、project 组件声明探测+指引；check|install [gate]）
-│   └── report.sh              证据落盘 → .harness/changes/<id>/gate-<gate>.md
+│   └── report.sh              最新运行摘要 → .harness/changes/.runtime/<id>/gate-<gate>.md
 ├── hooks/                  ← 宿主 hooks 触发器（Claude Code / Gemini CLI / Codex / Cline / OpenCode，宿主引擎强制）
 │   ├── README.md              多宿主对照表 + 安装/卸载/GATE_STRICT/克隆区说明
 │   ├── settings.json.tpl      Claude Code 配置段 → 合并进 .claude/settings.json
@@ -628,8 +635,8 @@ mkdir -p .claude/skills/
 
 > **退出码约定**（hooks 与技能共用）：`0` 通过 / `1` 违规红灯 / `2` 工具未安装（显式降级，落痕可审计）/ `3` 用法错误。
 > **调用约定**：流水线技能（coding-skill / unit-test-write / expert-reviewer / unit-test-ci）一律以本层脚本作为命令事实源，
-> 每小步/每出口调用并把输出经 `report.sh` 落盘为证据；hooks 自动触发同样走本层。
-> **review-check**：expert-reviewer 完成标志处调用 `harness-gate.sh review-check <id>` 校验 review.md 双轴结构（Spec/Standards 节头 + 审查范围 + 🔴 引用），rc=0 方可 `reviewing → ci`。
+> 每小步/每出口调用，`report.sh` 只更新被忽略的运行摘要；阶段结论由技能写入 report.md，机器不覆盖人工报告。hooks 自动触发同样走本层。
+> **review-check**：expert-reviewer 完成标志处调用 `harness-gate.sh review-check <id>` 校验 compact report.md 的④双轴结构（全栈按 report_ref；legacy 读取 review.md；包含 Spec/Standards 节头、审查范围与 🔴 引用），rc=0 方可 `reviewing → ci`。
 
 ### Step 8: 输出项目摘要卡片
 

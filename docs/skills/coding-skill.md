@@ -101,6 +101,6 @@ Refactor：在测试保护下重构
 - [ ] 收尾完成 Step 4.6 全量自查（V1~V6 + D1~D10），逐条附实测证据，无未处理项
 - [ ] **独立复核已过**：Step 4.7 由独立子智能体重读代码后 0🔴（或全部登记"记录在案未修"）；降级须标注，主会话自审不算
 - [ ] 每个 AC 的闭环记录已留痕（影响面内调用点清单 + 核对结论写入 change.md），自查有证据、评审可追溯
-- [ ] **机器门禁证据**：已跑 `.harness/scripts/harness-gate.sh check-style all <id>` 与 `static-analysis <id>`（退化直接执行亦可），经 `report.sh` 落盘 `gate-check-style.md` / `gate-static-analysis.md`；PASS 或显式 `[DEGRADED]`（须人工核对签名）——绝不静默跳过
+- [ ] **机器门禁证据**：已跑 `.harness/scripts/harness-gate.sh check-style all <id>` 与 `static-analysis <id>`（退化直接执行亦可），经 `report.sh` 更新 changes/.runtime/<id>/ 下的 gate 摘要，阶段结论写 report.md 的②章节；PASS 或显式 `[DEGRADED]`（须人工核对签名）——绝不静默跳过
 
 > 全部 9 条满足 → **更新 `change.md` 状态 `coding → testing`**，进入 ③ 单测编写。

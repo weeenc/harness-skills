@@ -31,7 +31,7 @@
 
 ### Step 3: 保存
 
-- 保存到 `.harness/changes/<id>/handoff.md` 或其他指定位置
+- 按需保存到 `.harness/changes/.runtime/<id>/handoff.md` 或用户指定位置；普通阶段切换只更新变更卡和阶段报告，团队待办不得只留在临时交接文件
 
 ## 交接文档包含什么？
 

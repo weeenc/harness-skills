@@ -13,8 +13,8 @@ description: 项目变更状态总览——扫描 .harness/changes/*/change.md�
 
 ## 1. 扫描变更卡
 
-1. 列出 `.harness/changes/*/change.md` 所有文件（跳过 `_relations.json`、`_graph.md`、`TECH-DEBT.md` 等非变更卡文件）。
-2. 若无任何 change.md → 输出：`📭 尚无变更记录。运行 /harnessing 创建第一个需求变更。`
+1. 列出 `.harness/changes/*/change.md` 与 `*/workspace-change.md`（跳过 `_TEMPLATE`、`.runtime` 和其他非卡片文件）。全栈按 WS-ID 展示整体状态，子仓执行镜像不重复计为独立需求；子仓独立查询时注明其 workspace_ref。
+2. 若无任何变更卡 → 输出：`📭 尚无变更记录。运行 /harnessing 创建第一个需求变更。`
 3. 逐个解析 frontmatter 中的 `status:` 字段与 `slug:`。
 
 ## 2. 解析与分类
@@ -23,7 +23,7 @@ description: 项目变更状态总览——扫描 .harness/changes/*/change.md�
 
 | 分组 | status 值 |
 |------|----------|
-| 🚧 进行中 | `analyzing` / `coding` / `testing` / `reviewing` / `ci` / `verifying` |
+| 🚧 进行中 | `analyzing` / `coding` / `testing` / `reviewing` / `ci` / `verifying` / `implementing` / `integrating` |
 | ⏸ 草稿 | `draft` |
 | ✅ 已完成 | `done` |
 | ❌ 异常 | 无法解析 JSON/frontmatter，或 status 值未知 |
@@ -65,6 +65,8 @@ description: 项目变更状态总览——扫描 .harness/changes/*/change.md�
 | `reviewing` | 专家评审 | `/expert-reviewer <id>` |
 | `ci` | CI 门禁 | `/unit-test-ci <id>` |
 | `verifying` | 部署验证 | `/deploy-verify <id>` |
+
+工作空间卡按 `stage` 给出对应六阶段建议；缺 stage 则按粗粒度状态说明需补齐，不能直接套用单仓状态机。读取持久阶段结果时 compact 使用 report.md / report_ref，legacy 使用原独立报告；不生成新的状态文件。
 
 对每个进行中的 change 输出：
 ```

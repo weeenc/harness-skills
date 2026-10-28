@@ -144,10 +144,12 @@ printf '{"tool_name":"Write","tool_input":{"file_path":".harness/scripts/check-s
 
 ### 2.4 门禁证据去哪看
 
+新需求使用 compact 两文件协议（[变更管理](change-management.md)）；wiki、tech、rules 等维持原逻辑。机器摘要在运行区，人工确认写持久报告，不能仅引用本地日志。
+
 ```bash
-ls .harness/changes/<id>/     # gate-check-style.md / gate-coverage.md / gate-arch-check.md …
+cat .harness/changes/<id>/report.md   # 六阶段结论；全栈读 report_ref 指向的报告
 /harness-status               # 当前所有变更进度与待办聚合
-cat .harness/changes/<id>/gate-coverage.md   # 单次门禁结果（含 rc 与时间）
+cat .harness/changes/.runtime/<id>/gate-coverage.md   # 最新本地摘要（含 rc 与时间）
 ```
 
 ### 2.5 严格模式（可选，建议 CI/核心仓开启）
@@ -183,7 +185,7 @@ git add --ignore-missing \
 echo '.harness/clone/' >> .gitignore
 ```
 
-> 说明：`.harness/clone/` 由 hook 首次运行自动复制生成，提交会与现网配置漂移；`.harness/changes/` 与 `gate-*.md` 证据留档建议提交（审计对账用）。宿主配置（`.claude/settings.json` 等）是团队共享的门禁挂点，建议提交。
+> 说明：`.harness/clone/` 由 hook 首次运行自动复制生成，提交会与现网配置漂移；changes 下的卡片与六阶段 report.md 建议提交，`.runtime/` 由 changes/.gitignore 忽略；原始输出不逐次进入 Git，阶段报告保留关键证据，历史 legacy 报告不自动删除。宿主配置（`.claude/settings.json` 等）是团队共享的门禁挂点，建议提交。
 
 ---
 
@@ -241,7 +243,7 @@ rm -rf .harness/
 | 手动跑任一门禁 | `bash .harness/scripts/harness-gate.sh <gate> [file\|all] [change-id]`（gate: check-style/static-analysis/coverage/arch-check/security-scan） |
 | 进度总览 | `/harness-status` |
 | 改动配置/规则 | `/harness-standard` |
-| 证据落盘位置 | `.harness/changes/<id>/gate-*.md` |
+| 证据落盘位置 | `.harness/changes/.runtime/<id>/gate-*.md`（最新摘要）；持久结论在 report.md |
 | hooks 自测 | 见 1.5 ③④ |
 
 ## 8. 相关文档

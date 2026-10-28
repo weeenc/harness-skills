@@ -7,6 +7,8 @@ disable-model-invocation: true
 
 # 上下文交接技能（Handoff）— {{LANGUAGE}} 版
 
+> **产物定位**：按 `.harness/changes/README.md` 执行。旧项目缺少该文件时按下述模式分支处理，不阻断 legacy 流程。`artifact_mode: compact` 使用六阶段 `report.md`；有 `report_ref` 时读取共享报告，由协调者汇总写入，子仓只维护执行卡和本地运行摘要，完整需求/AC/审批读取 workspace_ref。只更新目标章节，保留其他阶段与人工记录。无 compact 标记的旧卡沿用已有 handoff.md（新交接写运行区）；不自动迁移或删除历史文件。
+
 > 当前对话结束时，将工作上下文压缩为一份交接文档，下一个对话可以直接读取续接。
 
 ---
@@ -26,14 +28,14 @@ disable-model-invocation: true
 | 信息来源 | 内容 |
 |---------|------|
 | `.harness/changes/<id>/change.md` | 当前变更状态 |
-| `.harness/changes/<id>/review.md` | 最近的评审记录 |
+| 目标 `report.md` 的④章节（legacy: review.md） | 最近的评审记录 |
 | 对话历史 | 关键决策、未解决问题 |
 | 当前代码变更 | 已修改但未提交的代码 |
 | {{LINT_CMD}} / 测试结果 | 最近的运行状态 |
 
 ### Step 2: 压缩交接文档
 
-写入 `.harness/changes/<id>/handoff.md`，包含：
+仅实际跨会话交接时更新 `.harness/changes/.runtime/<id>/handoff.md`，确保 changes/.gitignore 含 `/.runtime/`；普通阶段切换不调用本技能。团队需共享的阻塞、决策与下一步写回变更卡，不能只存在于被忽略的交接文件。内容包含：
 
 ```markdown
 # 交接文档: C-NNN
@@ -77,7 +79,7 @@ disable-model-invocation: true
 
 ### Step 3: 输出总结
 
-> 📋 交接文档已写入 `.harness/changes/C-NNN/handoff.md`
+> 📋 交接文档已写入 `.harness/changes/.runtime/C-NNN/handoff.md`
 > 新对话开始时，AI 会读取此文档续接工作。
 
 ---

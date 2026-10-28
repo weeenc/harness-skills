@@ -3,7 +3,7 @@
 > **流水线阶段**: ④ 第四步
 > **技能标识**: `expert-reviewer`
 > **输入**: 代码 + 单元测试
-> **产出**: `.harness/changes/<id>/review.md`
+> **产出**: 目标 `report.md` 的④章节（legacy: review.md）
 > **出口门禁**: 0 个 🔴 严重问题
 
 ## 它做什么？

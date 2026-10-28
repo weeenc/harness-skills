@@ -21,7 +21,7 @@
 ```
 Step 1: 提取链路（从 AC + 影响面列出主链路与降级链路）
     ↓
-Step 2: 生成用例（写 .harness/changes/<id>/e2e.md）
+Step 2: 生成用例（compact 写 report.md 的⑤/⑥章节；legacy 写 e2e.md）
     ↓
 Step 3: 执行（优先自动化，记录真实退出码与输出）
     ↓
@@ -64,7 +64,7 @@ Step 4: 结论（全 🟢 → verifying → done；有 🔴 → 如实退回）
 
 ## 完成标志
 
-- 用例卡已落盘 `.harness/changes/<id>/e2e.md`
+- 用例卡已落盘 目标 report.md 的⑤/⑥章节（legacy: e2e.md）
 - 用例已执行并留真实证据（退出码/输出），结果表已产出
 - 主链路与降级链路均 🟢（或 🔴 已如实记录并退回）
 
@@ -76,3 +76,4 @@ Step 4: 结论（全 🟢 → verifying → done；有 🔴 → 如实退回）
 | 部署冒烟/健康检查 | `/deploy-verify` |
 | 质量判定 + flow→test 对账 | `/harness-quality` |
 | E2E 用例生成/执行 | **本技能**（`/harness-e2e`） |
+新需求的用例与关键结果汇总到六阶段 report.md；原始输出放 changes/.runtime/<id>/，全栈共享报告由协调者汇总。测试代码目录保持不变。

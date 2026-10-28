@@ -6,7 +6,7 @@
 
 ## 它做什么？
 
-读取 `.harness/changes/` 的历史留档（change.md 状态变化 / review.md / verify.md / quality-report.md / TECH-DEBT.md），聚合出**迭代质量趋势报告**，回答"这个迭代/阶段我们做得怎么样"。报告用于：迭代回顾、把趋势问题转化为改进项（可登记为技术债或新 change）。
+读取 `.harness/changes/` 的历史留档（变更卡状态、六阶段 report.md、TECH-DEBT.md；兼容 legacy 独立报告），聚合出**迭代质量趋势报告**，回答"这个迭代/阶段我们做得怎么样"。报告用于：迭代回顾、把趋势问题转化为改进项（可登记为技术债或新 change）。
 
 ## 什么时候用？
 
@@ -21,9 +21,9 @@
 | 数据源 | 提取内容 |
 |--------|---------|
 | `.harness/changes/*/change.md` | 状态流转（id/status/created）、打回痕迹 |
-| `.harness/changes/<id>/review.md` | 评审结论、🔴/🟡 问题分布 |
-| `.harness/changes/<id>/verify.md` | 部署验证结论、回滚记录 |
-| `.harness/changes/<id>/quality-report.md` | 覆盖率、flow→test 映射、放行签字 |
+| report.md ④（legacy: review.md） | 评审结论、🔴/🟡 问题分布 |
+| report.md ⑥（legacy: verify.md） | 部署验证结论、回滚记录 |
+| report.md ③/⑤（legacy: quality-report.md） | 覆盖率、flow→test 映射、放行签字 |
 | `.harness/changes/TECH-DEBT.md` | 技术债条目与优先级 |
 | git 历史 | 提交节奏、commit message 含 change ID 的比例 |
 
@@ -33,8 +33,8 @@
 |------|---------|------|
 | 交付数/打回数 | done 数 vs 被打回次数 | 打回率高 → 需求/设计阶段质量差 |
 | 各阶段停留 | 每个 change 在 analyzing/coding/reviewing 停留时间 | 某阶段集中卡住 → 瓶颈 |
-| 评审问题分布 | review.md 中 🔴/🟡 问题的类型归类 | 同类问题反复 → 系统性问题 |
-| 覆盖率趋势 | quality-report.md 的覆盖率数字 | 下降 → 测试保护在退化 |
+| 评审问题分布 | ④评审中 🔴/🟡 问题的类型归类 | 同类问题反复 → 系统性问题 |
+| 覆盖率趋势 | ③/⑤章节的覆盖率数字 | 下降 → 测试保护在退化 |
 | 技术债变化 | TECH-DEBT.md 增删 | 债只增不减 → 熵失控 |
 | 提交质量 | commit message 含 change ID 的比例 | 低 → 追溯断裂 |
 

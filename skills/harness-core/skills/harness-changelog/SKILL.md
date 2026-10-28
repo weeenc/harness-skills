@@ -5,7 +5,9 @@ description: 变更日志——按语义化版本把已 done 的 change 汇总�
 
 # Harness Changelog — 变更日志维护
 
-把 `status: done` 的 change 汇总进 `CHANGELOG.md`：按语义化版本归类、按类型分组、条目链接到对应的 review.md/verify.md 留档。
+> **产物定位**：按 `.harness/changes/README.md` 执行。旧项目缺少该文件时按下述模式分支处理，不阻断 legacy 流程。`artifact_mode: compact` 使用六阶段 `report.md`；有 `report_ref` 时读取共享报告，由协调者汇总写入，子仓只维护执行卡和本地运行摘要，完整需求/AC/审批读取 workspace_ref。只更新目标章节，保留其他阶段与人工记录。无 compact 标记的旧卡沿用 review.md / verify.md；不自动迁移或删除历史文件。
+
+把 `status: done` 的 change 汇总进 `CHANGELOG.md`：按语义化版本归类、按类型分组、条目链接到对应 report.md 的④/⑥章节留档。
 
 > **定位**: 发布的前置整理（`/harness-ship` 的 Step 3 专用），也可独立运行。核心价值：**每个条目都能追溯到原始变更卡**，不写模糊的"若干优化"。
 
@@ -28,7 +30,7 @@ description: 变更日志——按语义化版本把已 done 的 change 汇总�
 
 ## [0.2.0] - <date>
 ### Added
-- <功能>（[C-0NN](.harness/changes/C-0NN/change.md) · [review](.harness/changes/C-0NN/review.md)）
+- <功能>（[C-0NN](.harness/changes/C-0NN/change.md) · [review](.harness/changes/C-0NN/report.md)）
 
 ### Changed
 - <变更>（[C-0NN](…)）

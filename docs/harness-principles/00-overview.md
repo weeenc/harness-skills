@@ -58,7 +58,7 @@
              └─ 汇总 rc 注入下一轮上下文
 
 7. 证据落盘   每个 gate 脚本末尾（有 change-id 时）调用 report.sh
-             → .harness/changes/<id>/gate-<gate>.md（PASS/FAIL/DEGRADED + rc + 时间）
+             → .harness/changes/.runtime/<id>/gate-<gate>.md（PASS/FAIL/DEGRADED + rc + 时间）
 
 8. 对账审计   harness-status / harness-quality / harness-retro 读这些 gate-*.md
 ```
@@ -122,3 +122,4 @@
 | [10-hooks-gemini.md](10-hooks-gemini.md) | `hooks/gemini/*.sh` + `gemini/settings.json.tpl` |
 | [11-hooks-cline.md](11-hooks-cline.md) | `hooks/cline/harness-plugin.ts` |
 | [12-hooks-opencode.md](12-hooks-opencode.md) | `hooks/opencode/harness-plugin.ts` |
+> 新版 report.sh 将 gate 摘要写在 changes/.runtime/<id>/，重复检查只更新固定文件。阶段结束将关键证据与人工确认写 report.md，不提交临时摘要；旧报告保留兼容。详见 [运行摘要协议](08-report.md)。

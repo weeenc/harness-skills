@@ -7,7 +7,7 @@
 
 ## 它做什么？
 
-把 `status: done` 的 change 汇总进 `CHANGELOG.md`：按语义化版本归类、按类型分组、条目链接到对应的 review.md/verify.md 留档。
+把 `status: done` 的 change 汇总进 `CHANGELOG.md`：按语义化版本归类、按类型分组、条目链接到对应的 report.md 的④/⑥章节 留档。
 
 ## 什么时候用？
 
@@ -34,7 +34,7 @@
 
 ## [0.2.0] - <date>
 ### Added
-- <功能>（[C-0NN](.harness/changes/C-0NN/change.md) · [review](.harness/changes/C-0NN/review.md)）
+- <功能>（[C-0NN](.harness/changes/C-0NN/change.md) · [review](.harness/changes/C-0NN/report.md)）
 
 ### Changed
 - <变更>（[C-0NN](…)）
@@ -98,3 +98,4 @@ Step 3: 落盘（[Unreleased] 下暂存；发布时由 /harness-ship 收口为�
 | 变更条目整理 | **本技能**（`/harness-changelog`） |
 | 版本号决策 + tag | `/harness-ship` |
 | 未发布 change 清单 | `/harness-status` |
+上述为 compact 模式；没有 compact 标记的旧卡继续读取原 review.md/verify.md。全栈通过执行卡 report_ref 关联共享报告。

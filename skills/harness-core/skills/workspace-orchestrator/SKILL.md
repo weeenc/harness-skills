@@ -16,7 +16,7 @@ description: 编排多个独立 Git 仓库的全栈变更。维护工作空间�
 | ① harnessing | 分析完整需求、仓库范围、契约和 AC | 生成各仓库任务，不单独启动需求流程 |
 | ② coding-skill | 按依赖顺序或并行实现 | 前端/后端各自编码并记录证据 |
 | ③ unit-test-write | 汇总测试策略并补齐测试 | 各仓库运行本地测试和覆盖率 |
-| ④ expert-reviewer | 对完整跨仓 diff 做一次聚合评审 | 分别读取各仓库 diff，输出一个 workspace review |
+| ④ expert-reviewer | 对完整跨仓 diff 做一次聚合评审 | 分别读取各仓库 diff，汇总到 workspace report.md 的④章节 |
 | ⑤ unit-test-ci | 执行一次联合质量门禁 | 逐仓 CI + 契约兼容性 + 联调/E2E |
 | ⑥ deploy-verify | 执行一次联合发布验证 | 按发布顺序检查前后端健康和回滚 |
 
@@ -46,7 +46,7 @@ workspace: draft → analyzing → implementing → integrating → verifying �
 local repo: draft → analyzing → coding → testing → reviewing → ci → verifying → done
 ```
 
-在 single-pipeline 模式下，工作空间状态是唯一对外状态；仓库内状态由编排器同步或写入 `repo-execution.md`。只有所有 required 仓库、契约检查和联合验证均通过，workspace 才能进入 `done`。
+在 single-pipeline 模式下，工作空间状态是唯一对外状态；仓库内状态由编排器同步到各自 `change.md`。只有所有 required 仓库、契约检查和联合验证均通过，workspace 才能进入 `done`。
 
 ## 工作空间变更卡
 
@@ -56,6 +56,8 @@ local repo: draft → analyzing → coding → testing → reviewing → ci → 
 id: WS-001
 status: implementing
 pipeline_mode: workspace_once
+artifact_mode: compact
+stage: coding-skill
 repos:
   - id: backend
     local_change: C-101
@@ -76,16 +78,29 @@ integration:
 
 正文必须补充 REQ/AC、跨仓依赖、契约变更、联合验证、发布顺序和回滚顺序。
 
+## 变更文档与运行数据
+
+遵循 `.harness/changes/README.md`。新全栈需求只在协调仓保留 `workspace-change.md` 与 `report.md`；六阶段各更新已有报告章节，只有协调者写入共享报告。旧卡没有 compact 标记时兼容原报告，不自动迁移。
+
+子仓只保留 `change.md`：`id`、`status`、`artifact_mode: compact`、`workspace_change`、`workspace_ref`、`report_ref`、分工和 commit/PR。两个引用均相对本地卡片目录计算；先确认目标 workspace-change 的 ID。协调者同步本地状态，子仓技能返回执行结果，由协调者按仓库汇总；不重复需求审批，不生成第二套阶段报告。子仓 `review-check` 直接通过 report_ref 检查共享报告，不复制本地 review.md。
+
+初始化协调层时也复制 changes/README.md、changes/.gitignore、卡片/报告模板与无语言参数的 scripts/report.sh、scripts/review-check.sh。若生成联合门禁包装器，采用以下产物边界：
+
+- 每个门禁原始输出与最新结果写 `changes/.runtime/<WS-ID>/<repo>/<gate>/` 的固定文件；单仓脚本的摘要留在其本地 `.runtime/<C-ID>/`。不在持久需求目录创建 evidence/run-*。
+- 每次检查不复制两仓完整 diff；需要保留未提交状态时，每份不同代码状态仅存一份快照，各检查引用它。原始输出、快照都由 `changes/.gitignore` 的 `/.runtime/` 忽略；不能把其他目录的 local 配置当缓存。
+- 阶段结束只将仓库、命令、版本/dirty 范围、时间、rc、关键断言与限制写入共享 report.md。重要历史原始证据需要稳定制品地址；不能仅链接本机日志。
+- 真正的验证代码仍在项目测试目录；wiki/tech/rules/契约等沿用原维护方式。运行区不能替代共享知识或唯一源码备份，也不自动清理。
+
 ## 执行顺序
 
 1. 调用 `repo-discovery`，确认仓库、模块和 Git 状态。
 2. 在 workspace 变更卡中固定 API/事件/数据库契约的唯一来源。
-3. 为每个需要改动的仓库登记 local change 或 `repo-execution.md`，并记录 `depends_on` 或 `relates_to`。
+3. 为每个需要改动的仓库从 local-change.md 模板创建 change.md 执行卡，标记 artifact_mode: compact，填写 workspace_ref / report_ref，并记录关系；不复制整个模板目录。
 4. 先完成契约，再允许前后端并行编码；后端未就绪时，前端使用 `harness-api-mock`，mock 必须来自同一契约。
 5. 在工作空间的 ②~③ 阶段批量调度各仓库执行编码和测试，不重新启动各自的需求分析流程。
-6. 在 ④ 阶段聚合各仓库 diff，输出一份 workspace review。
+6. 在 ④ 阶段聚合各仓库 diff，更新 workspace report.md 的④章节。
 7. 在 ⑤ 阶段按 `repo-map.yaml` 逐仓运行门禁，再运行契约兼容性和联合 E2E；命令必须使用 `git -C <repo>` 或进入对应仓库执行。
-8. 在 ⑥ 阶段记录真实的 commit SHA、门禁报告和部署版本，按依赖顺序完成发布验证。
+8. 在 ⑥ 阶段的共享报告记录真实的 commit SHA、具名门禁结论和部署版本，按依赖顺序完成发布验证。
 9. 只有所有 required 仓库都通过，才将 workspace 变更卡置为 `done`。
 
 ## 必须阻断的情况
@@ -98,7 +113,7 @@ integration:
 
 ## 完成标志
 
-- 每个 local change 都有明确仓库、分支、commit 和本地门禁证据；
+- 每个 local change 都有明确仓库、分支、commit、共享报告引用和本地门禁摘要；
 - 契约检查通过，前端 mock/生成代码与契约版本一致；
 - 联合验证通过并留存证据；
 - workspace change 与各 local change 的状态、提交和 PR 可互相追溯。

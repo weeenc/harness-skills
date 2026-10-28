@@ -31,10 +31,10 @@
 ```
 Step 1: 版本号决策（留人）→ 候选版本 + 变更摘要呈现给人类，确认后才继续
 Step 2: bump VERSION（机器执行）→ 更新版本文件，提交 chore(C-NNN): bump version to <ver>
-Step 3: 更新 CHANGELOG → 追加新版本条目（链接到 review.md/verify.md）
+Step 3: 更新 CHANGELOG → 追加新版本条目（链接到 report.md 的④/⑥章节）
 Step 4: 打 tag（留人确认推送）→ git tag -a v<ver> -m ...，确认后 git push origin v<ver>
 Step 5: 触发 CI/CD（留人确认）→ 记录触发回执（job URL / 退出码）
-Step 6: 验证与收尾 → /deploy-verify 冒烟 + verify.md 记录 + 更新 TECH-DEBT.md
+Step 6: 验证与收尾 → /deploy-verify 冒烟 + report.md ⑥章节记录 + 更新 TECH-DEBT.md
 ```
 
 ### 版本号决策
@@ -55,7 +55,7 @@ Step 6: 验证与收尾 → /deploy-verify 冒烟 + verify.md 记录 + 更新 TE
 ## 回滚预案
 
 - 每次发布记录**回滚点**：上一个 tag + 数据库回滚脚本
-- 发布失败/线上异常 → 按预案回滚到上一 tag，记录到 verify.md，不掩盖
+- 发布失败/线上异常 → 按预案回滚到上一 tag，记录到 report.md ⑥章节，不掩盖
 - 回滚后回到 `verifying` 状态，定位根因再重发（`diagnosing-bugs`）
 
 ## 为什么需要它？
@@ -71,7 +71,7 @@ Step 6: 验证与收尾 → /deploy-verify 冒烟 + verify.md 记录 + 更新 TE
 
 - 版本文件已 bump、CHANGELOG 已更新、tag 已推送（留人确认后）
 - CI/CD 已触发并记录回执，发布后冒烟通过
-- verify.md 已记录版本号/时间/回滚点
+- report.md ⑥章节已记录版本号/时间/回滚点
 
 ## 与相邻技能
 
@@ -82,3 +82,4 @@ Step 6: 验证与收尾 → /deploy-verify 冒烟 + verify.md 记录 + 更新 TE
 | CHANGELOG 汇总 | `/harness-changelog` |
 | 质量放行签字 | `/harness-quality` |
 | 回滚/线上异常定位 | `diagnosing-bugs` |
+上述为 compact 模式；没有 compact 标记的旧卡继续读取原 review.md/verify.md。全栈通过执行卡 report_ref 关联共享报告。

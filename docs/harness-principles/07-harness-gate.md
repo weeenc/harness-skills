@@ -64,3 +64,4 @@ block 工具调用还是报 CI 失败。所以：
 - 被委托：`scripts/{check-style,static-analysis,coverage,arch-check,security-scan}.sh`
 - 证据：`scripts/report.sh`
 - 配置：`.harness/gate-config.json`（coverage 阈值等，由各 gate 脚本自行读取）
+> 新版 report.sh 将 gate 摘要写在 changes/.runtime/<id>/，重复检查只更新固定文件。阶段结束将关键证据与人工确认写 report.md，不提交临时摘要；旧报告保留兼容。详见 [运行摘要协议](08-report.md)。

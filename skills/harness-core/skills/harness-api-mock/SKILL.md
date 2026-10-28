@@ -53,7 +53,7 @@ description: API Mock——按接口协议生成 mock 数据与服务，让前�
 2. **mock 数据文件**：JSON/fixture 文件，供前端直接 import 或测试加载
 3. **网关/代理层 mock**：在开发网关配置 mock 路由
 
-产出 `.harness/changes/<id>/api-mock.md`：接口→mock 数据文件的映射表 + 启动方式。
+按 changes/README.md 定位产物：compact 将接口→mock 文件映射、启动方式与验证结果写入 report.md 的②章节；有 report_ref 时由协调者汇总到共享报告，需求/AC 读取 workspace_ref。旧卡仍使用 api-mock.md。Mock 代码与 fixture 保持在项目原有目录，运行输出放 changes/.runtime/<id>/。
 
 ### Step 4: 校验
 - mock 响应能通过契约校验（字段/类型/枚举）
@@ -80,7 +80,7 @@ description: API Mock——按接口协议生成 mock 数据与服务，让前�
 
 - 契约接口均已生成 mock 数据（含成功/空/边界/错误/鉴权分支）
 - mock 服务可启动，至少一个真实请求验证通过
-- `api-mock.md` 已落盘，接口 mock 状态已标注
+- Mock 映射与验证记录已写入目标阶段报告（legacy: api-mock.md），接口 mock 状态已标注
 ---
 
 

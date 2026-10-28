@@ -3,7 +3,7 @@
 > **流水线阶段**: ⑥ 第六步 · 收口
 > **技能标识**: `deploy-verify`
 > **输入**: 通过 ⑤ CI 的构建
-> **产出**: `.harness/changes/<id>/verify.md`
+> **产出**: 目标 `report.md` 的⑥章节（legacy: verify.md）
 > **出口门禁**: 冒烟 + 健康检查通过、有回滚预案
 
 ## 它做什么？

@@ -6,6 +6,8 @@ description: 为实现代码编写 {{LANGUAGE}} 单元测试，核心逻辑覆�
 
 # 单元测试编写技能（unit-test-write）— {{LANGUAGE}} 版
 
+> **产物定位**：按 `.harness/changes/README.md` 执行。旧项目缺少该文件时按下述模式分支处理，不阻断 legacy 流程。`artifact_mode: compact` 使用六阶段 `report.md`；有 `report_ref` 时读取共享报告，由协调者汇总写入，子仓只维护执行卡和本地运行摘要，完整需求/AC/审批读取 workspace_ref。只更新目标章节，保留其他阶段与人工记录。无 compact 标记的旧卡沿用 diagnosis.md 与既有测试记录；不自动迁移或删除历史文件。
+
 > **流水线阶段**: ③ 第三步
 > **输入**: ② 阶段的实现代码 + change.md
 > **出口门禁**: 测试通过 · 静态检查零新增告警 · 核心逻辑覆盖率 ≥80% · 覆盖全部 AC、边界与降级路径
@@ -64,7 +66,7 @@ description: 为实现代码编写 {{LANGUAGE}} 单元测试，核心逻辑覆�
 - 跑 `.harness/scripts/coverage.sh <change-id>`（内部为 `{{COV_CMD}}`，核心逻辑 ≥80%，阈值可在 `.harness/gate-config.json` 调整）；脚本不存在则退化为 `{{COV_CMD}}` 直接执行
 - 覆盖率不足 → 补测试，而非降低标准
 - 纯 getter/setter/配置类可豁免
-- 结果经 `report.sh` 落盘 `gate-coverage.md`；工具未安装时脚本输出 `[DEGRADED]`（**无法测量覆盖率**）——必须在 change.md 显式记录该降级
+- 结果经 `report.sh` 更新 `changes/.runtime/<id>/gate-coverage.md`，命令、版本、覆盖率和 rc 汇总到目标 `report.md` 的③章节；工具未安装时脚本输出 `[DEGRADED]`（**无法测量覆盖率**）——必须在 change.md 显式记录该降级
 
 ### Step 5.5: 阶段出口全量门禁复核
 - 跑 `.harness/scripts/harness-gate.sh check-style all <change-id>`（内部 `{{LINT_CMD}}`）——**零新增告警**（**含本阶段新增的全部测试文件**；本阶段是 vet 的最后一道门禁，测试文件里的死代码/自赋值等由 vet 兜住，AC-1 类"零新增告警"门槛以此为准），经 `report.sh` 落盘
@@ -74,7 +76,7 @@ description: 为实现代码编写 {{LANGUAGE}} 单元测试，核心逻辑覆�
 
 ### Step 6: 诊断辅助
 如果遇到无法稳定复现的 Bug 或非确定性故障，建议运行 `/diagnosing-bugs` 进行 6 阶段诊断。
-诊断结果记录到 `.harness/changes/<id>/diagnosis.md`。
+诊断结论更新到目标 `report.md` 的②章节；复现日志放 `changes/.runtime/<id>/`，不新建独立诊断文档（legacy 沿用原文件）。
 
 ---
 
@@ -92,7 +94,7 @@ description: 为实现代码编写 {{LANGUAGE}} 单元测试，核心逻辑覆�
 
 ## 5. 完成标志
 
-`{{LINT_CMD}}`（涉及包）零新增告警 + `{{TEST_CMD}} {{RACE_DETECT_ARG}}` + `{{COV_CMD}}` 全绿 + 覆盖率达标（门禁命令事实源为 `.harness/scripts/`，证据 `gate-*.md` 已落盘） → 更新 `change.md` 状态 `testing → reviewing`，进入 ④ 专家评审。
+`{{LINT_CMD}}`（涉及包）零新增告警 + `{{TEST_CMD}} {{RACE_DETECT_ARG}}` + `{{COV_CMD}}` 全绿 + 覆盖率达标（门禁命令事实源为 `.harness/scripts/`，最新运行摘要已落到 `.runtime/`，测试结论与证据摘要已写入目标 `report.md` 的③章节） → 更新 `change.md` 状态 `testing → reviewing`，进入 ④ 专家评审。
 ---
 
 
