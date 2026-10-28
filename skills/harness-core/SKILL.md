@@ -8,7 +8,7 @@ description: Harness 核心骨架模板 — 参数化模板化技能（被 apply
 本技能提供跨语言通用的 Harness 骨架模板与通用技能，包括：
 
 - `agents/owner.md` — 参数化的 Owner Agent 定义（含 `{{LANGUAGE}}` 等占位符）
-- `templates/changes/_TEMPLATE/` — 变更追踪模板（change.md / review.md / verify.md）
+- `templates/changes/_TEMPLATE/` — 变更追踪模板（默认卡片 + 六阶段 report.md；保留 legacy 模板）
 - `templates/wiki/` — 领域知识文档模板（业务模型 / 接口协议 / 数据模型 / 架构决策 / ADR-FORMAT）
 - `templates/CONTEXT.md` + `CONTEXT-FORMAT.md` — 领域语言词典模板与编写规范
 - `skills/` — 技能模板与跨语言通用技能

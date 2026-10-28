@@ -79,3 +79,4 @@ Gemini CLI hooks 的 stdout 遵循 **Golden Rule**：只输出**一个**最终 J
 
 **结果不满足时**：红灯/降级直接打在 systemMessage 上（会话收尾时模型必然看见），
 同时证据已落盘 `gate-*.md` 供审计；出口只汇报不阻断（`exit 0`）——Gemini 的硬拦只在 BeforeTool。
+> 新版 report.sh 将 gate 摘要写在 changes/.runtime/<id>/，重复检查只更新固定文件。阶段结束将关键证据与人工确认写 report.md，不提交临时摘要；旧报告保留兼容。详见 [运行摘要协议](08-report.md)。

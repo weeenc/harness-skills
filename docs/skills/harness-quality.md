@@ -39,7 +39,7 @@ Step 2: 跑真实 check（机械执行，记录真实退出码与原始输出）
     ↓
 Step 3: flow→test 映射矩阵（每条 AC 必须有直接对应的测试）
     ↓
-Step 4: 出报告 .harness/changes/<id>/quality-report.md
+Step 4: 出报告 .harness/changes/<id>/report.md 的⑤章节
     ↓
 Step 5: 人签字放行（同意 / 拒绝并给理由）
 ```
@@ -82,7 +82,7 @@ Step 5: 人签字放行（同意 / 拒绝并给理由）
 
 ## 完成标志
 
-- 报告已落盘 `.harness/changes/<id>/quality-report.md`，全部数据来自真实运行
+- 报告已落盘 目标 `report.md` 的⑤章节（legacy: quality-report.md），全部数据来自真实运行
 - flow→test 映射已逐条对账，漂移已红灯
 - 已获得人类签字（放行或拒绝），未代签
 

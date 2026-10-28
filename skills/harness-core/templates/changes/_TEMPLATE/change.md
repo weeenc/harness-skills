@@ -2,8 +2,9 @@
 id: C-NNN
 slug: <slug>
 status: analyzing
+artifact_mode: compact
 created: <date>
-iteration: <ITER-ID>     # 可选：走 iterations 协议时填，指向 .harness/iterations/<ITER-ID>/
+# iteration: <ITER-ID>     # 可选：走 iterations 协议时填，指向 .harness/iterations/<ITER-ID>/
 relations:
   # 六类关系（可选，由 harness-relate 维护，反向索引见 .harness/changes/_relations.json）
   # extends / depends_on / supersedes / resolves / conflicts_with / relates_to

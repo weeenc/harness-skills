@@ -12,6 +12,8 @@
    .harness/changes/<id>/   （全程留档，状态机驱动）
 ```
 
+新需求只保留变更卡与六阶段 report.md；全栈共享报告由协调者汇总。运行输出放 changes/.runtime/，规则与知识维护不变。
+
 每个阶段对应 `.harness/skills/` 下的一个技能，**严格按序，不可跳步**。
 
 ## 阶段定义
@@ -48,7 +50,7 @@
 | 属性 | 说明 |
 |------|------|
 | **输入** | 代码 + 单元测试 |
-| **产出** | `.harness/changes/<id>/review.md` |
+| **产出** | `report.md` ④章节（legacy: review.md） |
 | **出口门禁** | 0 个 🔴 严重问题 |
 | **核心原则** | 不手下留情，逐项审查，0 个 🔴 才放行 |
 
@@ -66,7 +68,7 @@
 | 属性 | 说明 |
 |------|------|
 | **输入** | 通过 ⑤ CI 的构建 |
-| **产出** | `.harness/changes/<id>/verify.md` |
+| **产出** | `report.md` ⑥章节（legacy: verify.md） |
 | **出口门禁** | 冒烟 + 健康检查通过、有回滚预案 |
 | **核心原则** | "CI 绿"不等于"线上可用" |
 
@@ -86,7 +88,7 @@
 每个变更通过 `change.md` 的状态字段驱动流转：
 
 ```
-drafting → reviewing → approved → coding → testing → reviewing → ci → verifying → done
+draft → analyzing → coding → testing → reviewing → ci → verifying → done
 ```
 
 详见 [变更管理](change-management.md)。

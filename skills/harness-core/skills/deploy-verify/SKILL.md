@@ -6,9 +6,11 @@ description: 部署后冒烟、健康检查、关键链路验证，确保变更�
 
 # 部署验证技能（deploy-verify）— {{LANGUAGE}} 版
 
+> **产物定位**：按 `.harness/changes/README.md` 执行。旧项目缺少该文件时按下述模式分支处理，不阻断 legacy 流程。`artifact_mode: compact` 使用六阶段 `report.md`；有 `report_ref` 时读取共享报告，由协调者汇总写入，子仓只维护执行卡和本地运行摘要，完整需求/AC/审批读取 workspace_ref。只更新目标章节，保留其他阶段与人工记录。无 compact 标记的旧卡沿用 verify.md 与 archive.md；不自动迁移或删除历史文件。
+
 > **流水线阶段**: ⑥ 第六步 · 收口
 > **输入**: 通过 ⑤ CI 的构建
-> **产出**: `.harness/changes/<id>/verify.md`
+> **产出**: 目标 `report.md` 的「⑥ 部署验证与归档」章节
 > **出口门禁**: 冒烟 + 健康检查通过，有回滚预案
 
 ### 核心规则（一句话摘要）
@@ -80,35 +82,37 @@ curl {{METRICS_ENDPOINT}}  # 指标可读
 
 ---
 
-## 3. 输出格式（写入 verify.md）
+## 3. 输出格式（compact 更新 report.md 的⑥章节）
 
-> **⛔ 强制规则：无论验证结果是否通过，都必须将完整报告写入 `.harness/changes/<id>/verify.md`。**
-> **未写入 verify.md 不得进入下一步。**
+legacy 沿用 verify.md。记录实际版本、环境、traceId/业务断言与动态事实回查；下方成功项只在真实执行后填写，不覆盖同章节已有人工确认。
+
+> **⛔ 强制规则：无论验证结果是否通过，都必须将完整报告写入目标 `report.md` 的「⑥ 部署验证与归档」章节。**
+> **未写入 report.md 不得进入下一步。**
 
 ```markdown
-# ✅ 部署验证报告: C-NNN
+## ⑥ 部署验证与归档
 
-## 总览
+### 总览
 - 验证范围: `git diff HEAD` — N 个文件，+N/-N 行
 - 分支: <branch-name>
 
-## 环境
+### 环境
 - profile: dev / 镜像: …
 
-## 健康检查
+### 健康检查
 - [x] /health = UP
 
-## 冒烟测试
+### 冒烟测试
 | 链路 | 结果 |
 |------|------|
 | 核心 API | 🟢 |
 | 降级 | 🟢 |
 
-## 回滚预案
+### 回滚预案
 - 上一稳定版本: <tag>
 - 回滚命令: <cmd>
 
-## 结论
+### 结论
 ✅ 验证通过，变更可交付 / ❌ 失败，退回 …
 ```
 
@@ -118,10 +122,11 @@ curl {{METRICS_ENDPOINT}}  # 指标可读
 
 无论验证结果如何，**必须先完成**：
 
-1. ✅ 将完整报告写入 `.harness/changes/<id>/verify.md`
-2. 然后根据检查结果执行分支：
+1. ✅ 将完整报告写入目标 `report.md` 的「⑥ 部署验证与归档」章节
+2. 在同一⑥章节填写交付与知识回流清单（业务→wiki、链路→tech、决策→ADR、术语→CONTEXT）；沿用原知识维护逻辑，compact 不另建 archive.md。
+3. 然后根据检查结果执行分支：
    - **验证通过** → 更新 `change.md` 状态 `verifying → done`，变更交付完成，同步相关 `.harness/wiki/`（业务规则）与 `.harness/tech/`（技术链路）文档
-   - **验证失败** → 退回 ⑤ unit-test-ci（verify.md 作为排查参考依据）
+   - **验证失败** → 退回 ⑤ unit-test-ci（report.md 作为排查参考依据）
 ---
 
 

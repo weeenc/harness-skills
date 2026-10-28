@@ -44,7 +44,7 @@
 
 ### Step 6: 创建变更追踪目录
 
-创建 `.harness/changes/` 目录结构，用于后续变更管理。
+创建 `.harness/changes/` 产物协议、忽略规则和模板。新需求默认 compact：一张卡片 + 一份六阶段 report.md，全栈由协调层汇总、子仓保留执行卡；运行数据写 changes/.runtime/ 并忽略。旧卡不自动迁移，wiki/tech/rules 等维持原逻辑。
 
 ## 约束
 

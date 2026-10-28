@@ -5,7 +5,9 @@ description: 迭代复盘——读取 .harness/changes/ 历史与状态留档，
 
 # Harness Retro — 迭代复盘
 
-读取 `.harness/changes/` 的历史留档（change.md 状态变化 / review.md / verify.md / quality-report.md / TECH-DEBT.md），聚合出**迭代质量趋势报告**，回答"这个迭代/阶段我们做得怎么样"。
+> **产物定位**：按 `.harness/changes/README.md` 执行。旧项目缺少该文件时按下述模式分支处理，不阻断 legacy 流程。`artifact_mode: compact` 使用六阶段 `report.md`；有 `report_ref` 时读取共享报告，由协调者汇总写入，子仓只维护执行卡和本地运行摘要，完整需求/AC/审批读取 workspace_ref。只更新目标章节，保留其他阶段与人工记录。无 compact 标记的旧卡沿用 review.md / verify.md / quality-report.md / archive.md；不自动迁移或删除历史文件。
+
+读取 `.harness/changes/` 的历史留档（change.md / workspace-change.md 状态变化、report.md 六阶段结论与 TECH-DEBT.md；legacy 读取原独立报告），聚合出**迭代质量趋势报告**，回答"这个迭代/阶段我们做得怎么样"。
 
 > **定位**: 只读聚合技能，产出复盘报告，不改任何状态。报告用于：迭代回顾、把趋势问题转化为改进项（可登记为技术债或新 change）。
 
@@ -21,12 +23,12 @@ description: 迭代复盘——读取 .harness/changes/ 历史与状态留档，
 
 | 数据源 | 提取内容 |
 |--------|---------|
-| `.harness/changes/*/change.md` | 状态流转（id/status/created）、打回痕迹 |
-| `.harness/changes/<id>/review.md` | 评审结论、🔴/🟡 问题分布 |
-| `.harness/changes/<id>/verify.md` | 部署验证结论、回滚记录 |
-| `.harness/changes/<id>/quality-report.md` | 覆盖率、flow→test 映射、放行签字 |
+| `.harness/changes/*/change.md` / `workspace-change.md` | 状态流转（id/status/created）、打回痕迹 |
+| `report.md` ④（legacy: review.md） | 评审结论、🔴/🟡 问题分布 |
+| `report.md` ⑥（legacy: verify.md） | 部署验证结论、回滚记录 |
+| `report.md` ③/⑤（legacy: quality-report.md） | 覆盖率、flow→test 映射、放行签字 |
 | `.harness/changes/TECH-DEBT.md` | 技术债条目与优先级 |
-| `.harness/changes/*/archive.md` | 知识回流清单（本次迭代确认了哪些业务规则→wiki、链路→tech） |
+| `report.md` ⑥知识回流（legacy: archive.md） | 知识回流清单（本次迭代确认了哪些业务规则→wiki、链路→tech） |
 | 手记 / AI Trace 日志（可选） | 对话内补充上下文次数、同一问题纠正次数 |
 | git 历史 | 提交节奏、commit message 含 change ID 的比例 |
 
@@ -36,17 +38,19 @@ description: 迭代复盘——读取 .harness/changes/ 历史与状态留档，
 按 `$ARGUMENTS` 或对话上下文确定复盘范围：`last-iteration`（近 N 个 change）/ 指定 id 区间 / 指定日期段。无参数 → 默认最近 10 个 change。
 
 ### Step 2: 聚合指标
+
+按变更卡的 artifact_mode 选择输入；全栈按 WS-ID 聚合，共享 report_ref 只读取并统计一次。忽略 changes/.runtime 与 _TEMPLATE；运行区缺失不影响已归档阶段摘要，摘要缺失则明确记为无证据，不自动重建成功记录。
 对时间窗内的 change 计算：
 
 | 指标 | 计算方式 | 信号 |
 |------|---------|------|
 | 交付数/打回数 | done 数 vs 被打回次数 | 打回率高 → 需求/设计阶段质量差 |
 | 各阶段停留 | 每个 change 在 analyzing/coding/reviewing 停留时间 | 某阶段集中卡住 → 瓶颈 |
-| 评审问题分布 | review.md 中 🔴/🟡 问题的类型归类 | 同类问题反复 → 系统性问题 |
-| 覆盖率趋势 | quality-report.md 的覆盖率数字 | 下降 → 测试保护在退化 |
+| 评审问题分布 | ④评审中的 🔴/🟡 问题的类型归类 | 同类问题反复 → 系统性问题 |
+| 覆盖率趋势 | ③/⑤中的覆盖率数字 | 下降 → 测试保护在退化 |
 | 技术债变化 | TECH-DEBT.md 增删 | 债只增不减 → 熵失控 |
 | 提交质量 | commit message 含 change ID 的比例 | 低 → 追溯断裂 |
-| 知识回流率 | archive.md 中「是否已更新」勾选比例 | 低 → 知识库与代码漂移 |
+| 知识回流率 | ⑥知识回流表中「是否已更新」勾选比例 | 低 → 知识库与代码漂移 |
 | AI Trace 信号 | 对话内补充上下文次数 / 同一问题纠正次数（可选，需 AI Trace 日志） | 高 → 项目 Harness 有待完善 |
 
 ### Step 3: 出报告（写 `.harness/retro/<日期>.md`）

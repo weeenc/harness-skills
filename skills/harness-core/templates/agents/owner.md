@@ -56,6 +56,8 @@
 交付完成（回写 changes/ 状态为 done）
 ```
 
+**变更产物**：遵循 `.harness/changes/README.md`；新需求只保留变更卡和六阶段 report.md，工作空间以 report_ref 汇总一次。运行记录写 changes/.runtime，不为每次调用增加持久文档；wiki/tech/rules 等仍按原逻辑维护。
+
 **门禁原则**: 任一 gate 不通过，**禁止进入下一步**。退回上一步修复或请示人类。
 
 ---
@@ -95,7 +97,7 @@
 | 外部事实查证 | `research` | 对一手来源调研，结果落 wiki |
 | 编码时遇到难复现 Bug | `/diagnosing-bugs` | 6 阶段严谨诊断流程，先建反馈循环再猜原因 |
 | git merge/rebase 冲突 | `resolving-merge-conflicts` | 逐 hunk 解决，保留双方意图 |
-| 阶段切换 / 对话交接 | `/handoff` | 压缩上下文为交接文档，下一个对话无缝续接 |
+| 实际跨会话交接 | `/handoff` | 临时交接写 changes/.runtime；阶段切换只更新已有卡片和 report.md |
 | 架构摩擦 / 设计审查 | `/arch-review` | 扫描浅模块，生成 Mermaid 报告，逐一打磨 |
 | 当前进度总览 | `harness-status` | 聚合 changes 状态，输出阶段分布与待办 |
 | 无人值守收敛 | `harness-loop-run` | 编码→测试→评审自主循环，到 ci 停机交人 |

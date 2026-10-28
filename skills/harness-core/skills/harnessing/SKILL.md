@@ -5,6 +5,8 @@ description: 需求拷问引擎。使用场景：当用户要求"帮我理清需
 
 # 需求拷问引擎（Harnessing）
 
+> **产物定位**：按 `.harness/changes/README.md` 执行。旧项目缺少该文件时按下述模式分支处理，不阻断 legacy 流程。`artifact_mode: compact` 使用六阶段 `report.md`；有 `report_ref` 时读取共享报告，由协调者汇总写入，子仓只维护执行卡和本地运行摘要，完整需求/AC/审批读取 workspace_ref。只更新目标章节，保留其他阶段与人工记录。无 compact 标记的旧卡沿用既有变更卡与已选用的 iterations 协议；不自动迁移或删除历史文件。
+
 > 一场让你"有点不舒服"的灵魂拷问，帮你把模糊的需求/方案/设计打磨到能落地的程度。
 
 ## 核心原则
@@ -78,9 +80,9 @@ description: 需求拷问引擎。使用场景：当用户要求"帮我理清需
 | 下一步建议 | ... |
 ```
 
-将需求总结写入 `.harness/changes/` 中的变更卡，状态为 `analyzing`，建议用户创建正式变更进入流水线。
+将需求总结写入 `.harness/changes/<id>/change.md`（全栈为 workspace-change.md），状态为 `analyzing`，新卡标记 `artifact_mode: compact`。只实例化所需卡片；确认需求后将审批引用写入 `report.md` 的①章节，不复制整个模板目录。
 
-> **迭代协议（可选）**：复杂需求可改用机器可读协议。先复制 `.harness/iterations/_TEMPLATE/` 为 `.harness/iterations/<ITER-ID>/`，再把 REQ/AC 落 `prd.md`，并在 `change.md` frontmatter 增加 `iteration: <ITER-ID>` 字段关联，供 ②~④ 对账（见 `开发流程规范.md §2.2`）。
+> **迭代协议（可选）**：复杂需求可改用机器可读协议，选用逻辑保持不变。先复制 `.harness/iterations/_TEMPLATE/` 为 `.harness/iterations/<ITER-ID>/`，再把 REQ/AC 落 `prd.md`，并在 `change.md` frontmatter 增加 `iteration: <ITER-ID>` 字段关联，供 ②~④ 对账（见 `开发流程规范.md §2.2`）。
 
 > **流水线联动**：完成需求分析后，建议用户进入流水线阶段 ①，创建正式变更卡并开始编码实现。
 ---

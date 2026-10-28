@@ -99,7 +99,7 @@ git -C <path> status --short --branch
 
 ### 4. 输出跨仓工作单
 
-对涉及两个及以上仓库的需求，创建工作空间层变更卡（见 `workspace-change.md`），至少包含：
+对涉及两个及以上仓库的需求，仅实例化工作空间层变更卡（artifact_mode: compact，见 `workspace-change.md`），阶段结论汇总到同目录 report.md；子仓执行卡以 report_ref 关联，不复制另一套阶段文档。卡片至少包含：
 
 - workspace change ID；
 - 仓库清单与各自 local change ID；

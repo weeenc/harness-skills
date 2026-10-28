@@ -5,6 +5,8 @@ description: 端到端测试——基于 change.md 的验收标准生成或执�
 
 # Harness E2E — 端到端测试
 
+> **产物定位**：按 `.harness/changes/README.md` 执行。旧项目缺少该文件时按下述模式分支处理，不阻断 legacy 流程。`artifact_mode: compact` 使用六阶段 `report.md`；有 `report_ref` 时读取共享报告，由协调者汇总写入，子仓只维护执行卡和本地运行摘要，完整需求/AC/审批读取 workspace_ref。只更新目标章节，保留其他阶段与人工记录。无 compact 标记的旧卡沿用 e2e.md；不自动迁移或删除历史文件。
+
 基于 `.harness/changes/<id>/change.md` 的验收标准，生成或执行**端到端用例**——从用户入口出发，穿过真实接口/服务/存储，验证整条业务链路。
 
 > **定位**: 与 `unit-test-write`（单测）互补。单测验证"模块内正确"，E2E 验证"跨模块/跨服务串起来正确"。`harness-quality` 的 flow→test 映射矩阵里，关键业务流的直接测试可由 E2E 承担。
@@ -28,7 +30,7 @@ description: 端到端测试——基于 change.md 的验收标准生成或执�
 ### Step 1: 提取链路
 从 change.md 的 AC + 影响面，列出需要验证的**主链路**与**降级链路**（每条链路一个入口动作 → 关键中间步骤 → 期望终态）。
 
-### Step 2: 生成用例（写 `.harness/changes/<id>/e2e.md`）
+### Step 2: 生成用例（写目标 report.md 的⑤章节；部署冒烟结论写⑥）
 
 对每条链路输出用例卡：
 
@@ -76,7 +78,7 @@ description: 端到端测试——基于 change.md 的验收标准生成或执�
 
 ## 完成标志
 
-- 用例卡已落盘 `.harness/changes/<id>/e2e.md`
+- 用例、命令与关键断言已汇总到目标 report.md 的⑤/⑥章节（legacy 沿用 e2e.md）；测试代码仍放项目测试目录，原始输出放 changes/.runtime/<id>/
 - 用例已执行并留真实证据（退出码/输出），结果表已产出
 - 主链路与降级链路均 🟢（或 🔴 已如实记录并退回）
 ---

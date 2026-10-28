@@ -5,6 +5,8 @@ description: 发布工作流——跑测试 → bump VERSION → 更新 CHANGELO
 
 # Harness Ship — 发布工作流
 
+> **产物定位**：按 `.harness/changes/README.md` 执行。旧项目缺少该文件时按下述模式分支处理，不阻断 legacy 流程。`artifact_mode: compact` 使用六阶段 `report.md`；有 `report_ref` 时读取共享报告，由协调者汇总写入，子仓只维护执行卡和本地运行摘要，完整需求/AC/审批读取 workspace_ref。只更新目标章节，保留其他阶段与人工记录。无 compact 标记的旧卡沿用 verify.md；不自动迁移或删除历史文件。
+
 把已完成验证的 change 汇总为一次**正式发布**：测试全绿 → 版本号递增 → 更新 CHANGELOG → 打 git tag → 触发 CI/CD 发布流水线。
 
 > ⚠️ **发布是不可逆·外发操作，永远留人确认**。本技能每一步都产出可追溯证据，关键节点（版本号确定、tag 推送、生产触发）必须人类确认后才执行。
@@ -33,7 +35,7 @@ description: 发布工作流——跑测试 → bump VERSION → 更新 CHANGELO
 - 提交：`chore(C-NNN): bump version to <ver>`
 
 ### Step 3: 更新 CHANGELOG
-- 追加新版本条目（链接到对应 change 的 review.md/verify.md）
+- 追加新版本条目（链接到对应 change 的 report.md 的④/⑥章节）
 - 格式遵循 `/harness-changelog` 的规范
 
 ### Step 4: 打 tag（留人确认推送）
@@ -47,7 +49,7 @@ description: 发布工作流——跑测试 → bump VERSION → 更新 CHANGELO
 
 ### Step 6: 验证与收尾
 - 触发后按 `/deploy-verify` 做冒烟/健康检查
-- 在 `.harness/changes/<id>/verify.md` 记录发布结果（版本号、时间、回滚点）
+- 在目标 `report.md` 的⑥章节记录发布结果（版本号、时间、回滚点）
 - 更新 `TECH-DEBT.md`：本次发布引入/偿还的债
 
 ### Step 7: 发布后回查（代码合入 ≠ 完成）
@@ -57,7 +59,7 @@ description: 发布工作流——跑测试 → bump VERSION → 更新 CHANGELO
 |--------|------|-------------------------------------|
 | 代码版本 | tag / 构建产物已上线 | git / CI/CD 回执 |
 | 业务状态 | 工作项已流转为「已上线/已验证」 | 工作项平台（MCP/CLI） |
-| 交付证据 | verify.md 冒烟 + 健康检查 + 回滚点齐全 | `.harness/changes/<id>/verify.md` |
+| 交付证据 | report.md 的⑥章节中冒烟 + 健康检查 + 回滚点齐全 | 目标 `report.md` 的⑥章节 |
 
 > 接口成功 ≠ 异步链路完成。发现工作项状态滞后/协同未闭环 → 退回 `verifying` 补齐，不擅自标 `done`。
 
@@ -73,7 +75,7 @@ description: 发布工作流——跑测试 → bump VERSION → 更新 CHANGELO
 ## 4. 回滚预案
 
 - 每次发布记录**回滚点**：上一个 tag + 数据库回滚脚本
-- 发布失败/线上异常 → 按预案回滚到上一 tag，记录到 verify.md，不掩盖
+- 发布失败/线上异常 → 按预案回滚到上一 tag，记录到 report.md 的⑥章节，不掩盖
 - 回滚后回到 `verifying` 状态，定位根因再重发（`diagnosing-bugs`）
 
 ## 5. 与相邻技能
@@ -90,7 +92,7 @@ description: 发布工作流——跑测试 → bump VERSION → 更新 CHANGELO
 
 - 版本文件已 bump、CHANGELOG 已更新、tag 已推送（留人确认后）
 - CI/CD 已触发并记录回执，发布后冒烟通过
-- verify.md 已记录版本号/时间/回滚点
+- report.md 的⑥章节已记录版本号/时间/回滚点
 ---
 
 

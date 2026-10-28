@@ -6,6 +6,8 @@ description: 按已确认的需求卡与编码规范，小步实现可编译的 
 
 # 编码实现技能（coding-skill）— {{LANGUAGE}} 版
 
+> **产物定位**：按 `.harness/changes/README.md` 执行。旧项目缺少该文件时按下述模式分支处理，不阻断 legacy 流程。`artifact_mode: compact` 使用六阶段 `report.md`；有 `report_ref` 时读取共享报告，由协调者汇总写入，子仓只维护执行卡和本地运行摘要，完整需求/AC/审批读取 workspace_ref。只更新目标章节，保留其他阶段与人工记录。无 compact 标记的旧卡沿用 diagnosis.md 与既有阶段记录；不自动迁移或删除历史文件。
+
 > **流水线阶段**: ② 第二步
 > **输入**: 已审批的 `.harness/changes/<id>/change.md`
 > **出口门禁**: 失败测试先存在且已转绿 · `{{BUILD_CMD}}` 通过 · 符合 `.harness/rules/编码规范.md`
@@ -196,7 +198,7 @@ description: 按已确认的需求卡与编码规范，小步实现可编译的 
 
 ### 难以复现的 Bug
 如果遇到无法稳定复现的 Bug 或非确定性故障，建议运行 `/diagnosing-bugs` 进行 6 阶段诊断。
-诊断结果记录到 `.harness/changes/<id>/diagnosis.md`。
+诊断结论更新到目标 `report.md` 的②章节；复现日志放 `changes/.runtime/<id>/`，不新建独立诊断文档（legacy 沿用原文件）。
 
 ---
 
@@ -212,7 +214,7 @@ description: 按已确认的需求卡与编码规范，小步实现可编译的 
 6. ✅ 收尾完成 Step 4.6 全量自查（V1~V6 收尾项 + D1~D10，逐条附实测证据），无未处理项（安全/架构/契约/边界/并发等正确性维度已由编码阶段自查兜住，不遗留到评审）；
 7. ✅ **独立复核已过**：Step 4.7 由独立子智能体按 expert-reviewer 检查单重读代码后 0🔴（或全部登记"记录在案未修"并说明可接受理由）；宿主无 subagent 原语时降级为另开新会话复核，须在 change.md 标注降级；**主会话自审不算独立复核**；
 8. ✅ 每个 AC 的闭环记录已留痕（影响面内调用点清单 + 核对结论写入 change.md 对应 AC 处），自查有证据、评审可追溯。
-9. ✅ **机器门禁证据**：已跑 `.harness/scripts/harness-gate.sh check-style all <id>` 与 `static-analysis <id>`（退化为 `{{LINT_CMD}}`/`{{VET_CMD}}` 直接执行亦可），经 `report.sh` 落盘 `gate-check-style.md` / `gate-static-analysis.md`；结果为 PASS，或显式 `[DEGRADED]`（工具未安装，须人工核对并在证据文件签名）——**绝不静默跳过**。
+9. ✅ **机器门禁证据**：已跑 `.harness/scripts/harness-gate.sh check-style all <id>` 与 `static-analysis <id>`（退化为 `{{LINT_CMD}}`/`{{VET_CMD}}` 直接执行亦可），经 `report.sh` 更新 `changes/.runtime/<id>/gate-check-style.md` / `gate-static-analysis.md`，并将命令、版本、rc 与关键结果汇总到目标 `report.md` 的②章节；结果为 PASS，或显式 `[DEGRADED]`（工具未安装，须人工核对并在持久报告中签名）——**绝不静默跳过**。
 
 任一不满足 → 停留 `coding`，不进入 ③。
 

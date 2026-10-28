@@ -69,3 +69,4 @@ bash .harness/scripts/check-style.sh all <change-id>   # 全量深度（Stop/CI 
   / CI（全量）、Cline/OpenCode 插件的 afterTool（增量）
 - 入口转发：`harness-gate.sh check-style`
 - 证据：`report.sh` → `gate-check-style.md`
+> 新版 report.sh 将 gate 摘要写在 changes/.runtime/<id>/，重复检查只更新固定文件。阶段结束将关键证据与人工确认写 report.md，不提交临时摘要；旧报告保留兼容。详见 [运行摘要协议](08-report.md)。

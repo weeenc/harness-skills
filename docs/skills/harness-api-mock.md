@@ -46,7 +46,7 @@ Step 4: 校验（响应过契约校验 + 至少一个真实请求打通）
 2. **mock 数据文件**：JSON/fixture 文件，供前端直接 import 或测试加载
 3. **网关/代理层 mock**：在开发网关配置 mock 路由
 
-产出 `.harness/changes/<id>/api-mock.md`：接口→mock 数据文件的映射表 + 启动方式。
+产出 compact 的 report.md ②章节（legacy: api-mock.md）：接口→mock 数据文件的映射表 + 启动方式。
 
 ## 纪律
 
@@ -69,7 +69,7 @@ Step 4: 校验（响应过契约校验 + 至少一个真实请求打通）
 
 - 契约接口均已生成 mock 数据（含成功/空/边界/错误/鉴权分支）
 - mock 服务可启动，至少一个真实请求验证通过
-- `api-mock.md` 已落盘，接口 mock 状态已标注
+- 接口与 Mock 映射已写入 report.md 的②章节（legacy: api-mock.md），接口 mock 状态已标注
 
 ## 与相邻技能
 
@@ -79,3 +79,5 @@ Step 4: 校验（响应过契约校验 + 至少一个真实请求打通）
 | 接口协议维护 | `domain-modeling` / wiki |
 | E2E/集成测试用 mock | `/harness-e2e` + `harness-api-mock` 数据 |
 | 后端编码 | `/coding-skill` |
+
+compact 不另建 api-mock.md；接口与 Mock 映射写 report.md 的②章节，全栈通过 report_ref 汇总。Mock 源码和 fixture 的原有目录不变。

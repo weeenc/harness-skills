@@ -1,6 +1,8 @@
 ---
 id: WS-NNN
 status: analyzing
+artifact_mode: compact
+stage: harnessing
 pipeline_mode: workspace_once
 created: <date>
 repos:

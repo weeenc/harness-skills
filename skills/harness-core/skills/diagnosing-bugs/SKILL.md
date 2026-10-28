@@ -6,6 +6,8 @@ description: 严谨的 Bug 诊断流程——先建立稳定复现的反馈循�
 
 # Bug 诊断技能（Diagnosing Bugs）— {{LANGUAGE}} 版
 
+> **产物定位**：按 `.harness/changes/README.md` 执行。旧项目缺少该文件时按下述模式分支处理，不阻断 legacy 流程。`artifact_mode: compact` 使用六阶段 `report.md`；有 `report_ref` 时读取共享报告，由协调者汇总写入，子仓只维护执行卡和本地运行摘要，完整需求/AC/审批读取 workspace_ref。只更新目标章节，保留其他阶段与人工记录。无 compact 标记的旧卡沿用 diagnosis.md；不自动迁移或删除历史文件。
+
 > 核心原则：**在建立稳定复现的反馈循环之前，禁止跳到"猜原因"阶段。**
 
 ---
@@ -98,6 +100,8 @@ description: 严谨的 Bug 诊断流程——先建立稳定复现的反馈循�
 ---
 
 ## Phase 6 — 清理 + 事后分析
+
+compact 变更将根因、修复与回归结论汇总到目标 report.md 的②章节；探测日志放 changes/.runtime/<id>/，不新建过程报告。没有关联 change 的独立诊断保持原交付方式。
 
 - [ ] 原始场景不再复现（重新运行 Phase 1 循环）
 - [ ] 回归测试通过（或记录找不到正确接缝）

@@ -55,7 +55,7 @@ git submodule add <repo-url> src/<repo-name>
 
 ## 3. 知识飞轮（启动后持续）
 
-冷启动只是起点。之后每次需求迭代归档时（`archive.md`），把确认的长期知识回流 wiki/tech：
+冷启动只是起点。之后每次需求迭代归档时（compact 的 `report.md` ⑥知识回流；legacy 为 `archive.md`），把确认的长期知识回流 wiki/tech：
 
 ```
 冷启动 → 关联 src/ + 挂 raw/ → 清洗知识 → 采访补缺

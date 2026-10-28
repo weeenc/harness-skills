@@ -6,6 +6,8 @@ description: 机械化执行全量质量门禁——静态分析、竞态检测�
 
 # CI 与质量门禁技能（unit-test-ci）— {{LANGUAGE}} 版
 
+> **产物定位**：按 `.harness/changes/README.md` 执行。旧项目缺少该文件时按下述模式分支处理，不阻断 legacy 流程。`artifact_mode: compact` 使用六阶段 `report.md`；有 `report_ref` 时读取共享报告，由协调者汇总写入，子仓只维护执行卡和本地运行摘要，完整需求/AC/审批读取 workspace_ref。只更新目标章节，保留其他阶段与人工记录。无 compact 标记的旧卡沿用既有测试报告；不自动迁移或删除历史文件。
+
 > **流水线阶段**: ⑤ 第五步
 > **输入**: 通过 ④ 评审的完整变更
 > **出口门禁**: 所有 CI 阶段全绿
@@ -33,7 +35,7 @@ description: 机械化执行全量质量门禁——静态分析、竞态检测�
 
 你是质量门禁的机械化执行者。把约束从"靠人记"变成"靠机器验"。任一检查失败即红灯，禁止放行。
 
-> **命令事实源**：本阶段所有门禁命令优先经 `.harness/scripts/` 执行（`harness-gate.sh check-style|static-analysis|coverage|arch-check|security-scan`，自动处理"工具未安装显式降级"与证据落盘 `gate-*.md`）；脚本不存在时再退化为下方流水线的直接命令。凡输出 `[DEGRADED]` 的维度，必须在 `test/report.md` 显式登记并人工核对后签名，**绝不静默跳过**。
+> **命令事实源**：本阶段所有门禁命令优先经 `.harness/scripts/` 执行（`harness-gate.sh check-style|static-analysis|coverage|arch-check|security-scan`，自动处理"工具未安装显式降级"与本地摘要落盘 `changes/.runtime/<id>/gate-*.md`）；脚本不存在时再退化为下方流水线的直接命令。凡输出 `[DEGRADED]` 的维度，必须在目标 `report.md` 的⑤章节显式登记并人工核对后签名（已选 iterations 的卡片仍在原测试报告记录），**绝不静默跳过**。
 
 ---
 
@@ -89,6 +91,8 @@ stage-7  集成测试（PR 时）
 ---
 
 ## 4. 完成标志
+
+将实际命令、版本、时间、rc 与关键结果写入目标 report.md 的⑤章节（legacy 沿用原记录）；全栈由协调者汇总所有 required 仓库。原始输出只在 changes/.runtime/<id>/，不能只留下临时文件链接。
 
 全绿 → 更新 `change.md` 状态 `ci → verifying`，进入 ⑥ 部署验证。
 ---

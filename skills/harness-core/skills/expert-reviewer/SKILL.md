@@ -6,9 +6,11 @@ description: 双轴并行代码审查（Spec 需求匹配 + Standards 规范合�
 
 # 专家评审技能（expert-reviewer）— {{LANGUAGE}} 版
 
+> **产物定位**：按 `.harness/changes/README.md` 执行。旧项目缺少该文件时按下述模式分支处理，不阻断 legacy 流程。`artifact_mode: compact` 使用六阶段 `report.md`；有 `report_ref` 时读取共享报告，由协调者汇总写入，子仓只维护执行卡和本地运行摘要，完整需求/AC/审批读取 workspace_ref。只更新目标章节，保留其他阶段与人工记录。无 compact 标记的旧卡沿用 review.md；不自动迁移或删除历史文件。
+
 > **流水线阶段**: ④ 第四步
 > **输入**: 代码 + 单元测试
-> **产出**: `.harness/changes/<id>/review.md`
+> **产出**: 目标 `report.md` 的「④ 专家评审」章节
 > **出口门禁**: 0 个 🔴 严重问题
 
 ### 核心规则（一句话摘要）
@@ -20,6 +22,8 @@ description: 双轴并行代码审查（Spec 需求匹配 + Standards 规范合�
 ## 前置检查
 
 1. **定位目标 change**（按 `.harness/rules/变更定位规则.md`）：
+   - 工作空间调用优先使用指定的 `workspace-change.md` 与 `stage: expert-reviewer`；工作空间可仍为 `status: implementing`，不套用下面的单仓 `reviewing` 筛选。逐仓核对 required 仓库的测试结果及本地状态，缺项退回对应仓补齐。
+   - 工作空间评审以完整 workspace 需求/AC 和各子仓执行卡为输入，分别在每个代码仓捕获 diff、commit 与该仓规则；不要把协调仓的 diff 当成业务代码。协调者将带仓库标识的两轴结果汇总到唯一 report.md。以下单仓定位规则只用于独立需求或子仓执行单元。
    - 扫描 `.harness/changes/*/change.md`，过滤 `status: reviewing`
    - 用户已指定 `<id>` → 校验该 change 状态是否为 `reviewing`，否则报错
    - 恰好 1 个 → 自动选中
@@ -36,12 +40,12 @@ description: 双轴并行代码审查（Spec 需求匹配 + Standards 规范合�
    - `git log --oneline -5`（commit 清单）
    - `change.md` 全文（Spec 轴真相源）
    - `.harness/rules/` 规范文件清单（Standards 轴真相源）
-4. 验证 `review.md` 不存在或可覆盖
+4. 定位报告并保留其他阶段内容；仅更新④章节，不覆盖整份 report.md。开始新一轮 compact 评审时先置 `review_status: pending`（子仓由协调者更新），本轮评审完成后置 `review_status: complete`，该标记不代表评审通过。
 5. 缺前置 → 退回 ③ unit-test-write
 6. **加载机器门禁结果**（评审输入，不可跳过）：
    - 跑 `.harness/scripts/harness-gate.sh arch-check <id>` 与 `security-scan <id>`（退化为直接执行 `{{ARCH_TEST_CMD}}`/`{{SECURITY_CMD}}`），输出作为评审输入；
-   - 同时读取 `.harness/changes/<id>/gate-*.md`（③ 已落盘的 check-style / static-analysis / coverage 证据）；
-   - 机器结果为 `[DEGRADED]`（工具未安装）的维度，评审须**人工补检该维度**并在 review.md 标注；
+   - 同时读取 `.harness/changes/.runtime/<id>/gate-*.md`，读取③阶段的 check-style / static-analysis / coverage 摘要；缺失时可查旧 `<id>/gate-*.md`，但历史结果不代表本次通过；
+   - 机器结果为 `[DEGRADED]`（工具未安装）的维度，评审须**人工补检该维度**并在 report.md 标注；
    - 机器结果红灯（rc=1）的维度，评审须**逐条核对修复情况**，未修复不得放行。
 
 ---
@@ -102,10 +106,10 @@ Codex: Agent）。**一次调用派两个只读子任务，禁止串行两次、
 
 ### Step C. 聚合（原样呈现，禁止合并/重排）
 
-报告分 `## Spec 轴报告` / `## Standards 轴报告` 两节原样呈现（对齐 §4 review.md 模板；
+compact 的④章节内分 `### Spec 轴报告` / `### Standards 轴报告` 两节原样呈现（legacy 保持原二级节头；对齐 §4 阶段模板，
 测试质量等公共维度由主 agent 在 §4 模板的独立节补充，不并入两轴）。
 各轴末尾给本轴最严重问题；**禁止跨轴选一个 winner**。
-若宿主无 subagent 原语（降级路径）：同一 agent 顺序两遍评审，且必须在 review.md 标注
+若宿主无 subagent 原语（降级路径）：同一 agent 顺序两遍评审，且必须在 report.md 标注
 「降级模式」，不得伪装成双轴独立；降级后仍须通过 review-check 的节头与引用校验。
 
 ---
@@ -194,34 +198,38 @@ Codex: Agent）。**一次调用派两个只读子任务，禁止串行两次、
 
 ---
 
-## 4. 输出格式（写入 review.md）
+## 4. 输出格式（compact 写入 report.md ④章节）
 
-> **⛔ 强制规则：无论审查结果是否有 🔴 严重问题，都必须将完整报告写入 `.harness/changes/<id>/review.md`。**
-> **未写入 review.md 不得进入下一步。**
+下方样例只用于 compact；legacy 保持 review.md 的二级轴标题（见原 review.md 模板），不要把整份报告改成新格式。全栈只做一次聚合评审，输入覆盖所有 required 仓库，审查范围逐仓注明；子仓不再独立生成报告。
+
+> **⛔ 强制规则：无论审查结果是否有 🔴 严重问题，都必须将完整报告写入目标 `report.md` 的「④ 专家评审」章节。**
+> **未写入 report.md 不得进入下一步。**
 
 ```markdown
-# 📋 评审报告: C-NNN
+## ④ 专家评审
 
-## 总览
+review_status: complete
+
+### 总览
 - 审查范围: `git diff HEAD` — N 个文件，+N/-N 行
 - 分支: <branch-name>
 - 🔴 严重问题: N（必须修复）
 - 🟡 建议改进: N（推荐修复）
 - 🟢 通过项: N
 
-## Spec 轴报告（需求匹配）
-### 🔴 严重问题
-### 🟡 建议改进
+### Spec 轴报告（需求匹配）
+#### 🔴 严重问题
+#### 🟡 建议改进
 
-## Standards 轴报告（规范合规）
-### 🔴 严重问题
-### 🟡 建议改进
+### Standards 轴报告（规范合规）
+#### 🔴 严重问题
+#### 🟡 建议改进
 
-## 测试质量
-### 🔴 严重问题
-### 🟡 建议改进
+### 测试质量
+#### 🔴 严重问题
+#### 🟡 建议改进
 
-## 结论
+### 结论
 <一句话结论>
 ```
 
@@ -246,11 +254,11 @@ Codex: Agent）。**一次调用派两个只读子任务，禁止串行两次、
 
 无论审查结果如何，**必须先完成**：
 
-1. ✅ 将完整报告写入 `.harness/changes/<id>/review.md`
-2. **双轴结构校验**：跑 `.harness/scripts/harness-gate.sh review-check <id>`，rc=0 才视为结构合规；未派发两个独立子任务（且未在 review.md 标注「降级模式」）→ 报告视为**未完成**，不得进入下一步
+1. ✅ 将完整报告写入目标 `report.md` 的「④ 专家评审」章节
+2. **双轴结构校验**：跑 `.harness/scripts/harness-gate.sh review-check <id>`，rc=0 才视为结构合规；未派发两个独立子任务（且未在 report.md 标注「降级模式」）→ 报告视为**未完成**，不得进入下一步
 3. 然后根据检查结果执行分支：
-   - **0 个 🔴** → 更新 `change.md` 状态 `reviewing → ci`，进入 ⑤ CI 门禁
-   - **有 🔴** → 退回 ② 编码实现修复（review.md 作为修复参考依据）
+   - **0 个 🔴** → 单仓更新 `change.md` 状态 `reviewing → ci`；工作空间由协调者推进 `stage: unit-test-ci`、`status: integrating` 并同步子仓状态，进入 ⑤ CI 门禁
+   - **有 🔴** → 退回 ② 编码实现修复（report.md 作为修复参考依据）
 ---
 
 
