@@ -55,7 +55,7 @@ draft → analyzing → coding → testing → reviewing → ci → verifying �
 
 跟踪卡片、六阶段报告、共享协议和模板；`changes/.runtime/` 由 `changes/.gitignore` 忽略。`report.sh` 每门禁只更新一个本地摘要，既不修改 report.md，也不生成时间戳 run 目录或重复 diff。阶段结束由技能把真实命令、代码版本/dirty 范围、时间、rc、关键计数和断言写入报告。
 
-持久报告必须可独立阅读，不能把本地日志链接作为唯一证据。需要共享的完整历史输出保存到稳定 CI/制品地址，在报告保留地址和校验值；未提交源码、唯一备份和人工记录不能被自动清理。确需快照时，同一代码状态只保存一次，后续检查引用快照。
+持久报告必须可独立阅读，不能把本地日志链接作为唯一证据。原始 evidence、完整命令输出、截图和临时快照统一放 `.harness/changes/.runtime/<id>/evidence/<stage>/`，使用稳定文件名覆盖最新结果；需要共享的完整历史输出保存到稳定 CI/制品地址，在报告保留地址和校验值。未提交源码、唯一备份和人工记录不能被自动清理。确需快照时，同一代码状态只保存一次，后续检查引用快照。
 
 compact 不另建 review/verify/archive/quality-report/diagnosis/e2e/gate 文档。阶段切换不生成 handoff；真正换会话才按需更新 `.runtime/<id>/handoff.md`，共享待办仍回填卡片。用户明确要求额外专题报告时可以扩展。
 

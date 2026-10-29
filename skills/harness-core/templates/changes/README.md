@@ -32,7 +32,7 @@
 
 ## 运行数据不作为需求文档
 
-所有日志、临时快照、截图、完整命令输出、会话交接写到 `changes/.runtime/<id>/`，由 `changes/.gitignore` 中的 `/.runtime/` 忽略。不要再生成 `<id>/evidence/**/run-*`。目录名叫 `local` 不代表缓存；其他目录不受本规则影响。
+所有原始 evidence、日志、临时快照、截图、完整命令输出和会话交接写到 `changes/.runtime/<id>/evidence/<stage>/` 或该变更的 `.runtime/<id>/` 固定文件，由 `changes/.gitignore` 中的 `/.runtime/` 忽略。每个阶段使用稳定文件名覆盖最新结果，不创建 `run-*` 时间戳目录，也不要在 `<id>/evidence/` 下写运行产物。`report.md` 只保留可独立阅读的摘要和关键证据。
 
 - `report.sh` 只更新 `.runtime/<id>/gate-<gate>.md` 的最新退出码摘要，不改持久报告、不保存整份 diff，也不创建时间戳目录。重复检查不会增加文件数量。
 - 阶段结束时，执行者将真实命令、时间、代码版本（有未提交内容时说明 dirty 范围）、退出码、关键计数/断言和结论写入 `report.md` 对应章节；不能只链接本地临时文件作为唯一证据。保留关键失败原因、修复结果和人工确认；重跑时更新当前结果，避免无限追加重复流水。
