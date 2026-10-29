@@ -505,7 +505,7 @@ mkdir -p .claude/skills/
     └── review.md / verify.md / archive.md  ← 仅供 legacy 卡使用
 ```
 
-新需求只实例化卡片；产生阶段结论时再创建 report.md，不复制整个模板目录。单仓每需求最多两份默认持久文档；多仓只有协调层的卡片 + 报告，子仓各一份执行卡。机器摘要、日志、临时快照和按需交接进入 `.harness/changes/.runtime/<id>/`，不会自动提交。不得生成 `<id>/evidence/**/run-*` 或每门禁一份持久 gate 报告。
+新需求只实例化卡片；产生阶段结论时再创建 report.md，不复制整个模板目录。单仓每需求最多两份默认持久文档；多仓只有协调层的卡片 + 报告，子仓各一份执行卡。机器摘要、原始 evidence、日志、临时快照和按需交接进入 `.harness/changes/.runtime/<id>/`（原始 evidence 使用 `evidence/<stage>/` 子目录），不会自动提交。每个阶段覆盖固定文件，不得生成 `<id>/evidence/**/run-*` 或每门禁一份持久 gate 报告。
 
 本步骤不修改 wiki、tech、rules 等其他目录的生成/维护逻辑。已有 change 不删除或自动迁移；旧卡保持兼容，显式迁移时才合并结论、人工签名与证据引用。
 
