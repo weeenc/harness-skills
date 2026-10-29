@@ -1,24 +1,39 @@
 # 独立 Git 仓库的全栈开发支持
 
-参考 `process-platform` 的结构，前端和后端可以继续保持两个独立 Git 仓库，并分别拥有 `.harness/agents/owner.md`、规则、skills、changes、脚本和 hooks。当前缺少的是父级协调层，而不是把两个仓库强行改成 monorepo。
+前端和后端保持两个独立 Git 仓库，各自拥有 `.harness/agents/owner.md`、规则、skills、changes、脚本和 hooks。父目录作为协调层，负责仓库映射、跨仓需求和联合验证。
 
 推荐采用三层结构，并在 workspace change 中设置 `pipeline_mode: workspace_once`：
 
 ```text
-workspace coordinator（独立 Git 仓库）
+workspace coordinator（建议独立 Git 仓库，也可先用普通文件夹）
 ├── .harness/repo-map.yaml
-├── .harness/changes/WS-*/workspace-change.md
+├── .harness/skills/common/（协调技能）
+├── .harness/changes/（模板；有需求后创建 WS-*）
 ├── contracts/ 或契约仓库引用
-└── scripts/workspace-gate.sh
-
-process-platform-frontend（独立 Git 仓库）
-└── .harness/changes/C-*/change.md
-
-process-platform-backend（独立 Git 仓库）
-└── .harness/changes/C-*/change.md
+├── scripts/workspace-gate.sh（真实联调命令确定后生成）
+├── demo-frontend/（独立 Git 仓库）
+│   └── .harness/
+└── demo-backend/（独立 Git 仓库）
+    └── .harness/
 ```
 
 工作空间协调仓库可以通过 Git submodule 固定前后端 commit，也可以只维护 clone 路径和 commit 清单。前者复现性更强；后者适合现有目录已经是两个独立仓库的情况，但必须把 commit SHA 写进 workspace change。
+
+## 一次初始化三个层级
+
+在协调层打开 AI 对话，执行一次：
+
+```text
+/apply-harness
+```
+
+工具会发现前后端 Git 根、分别检测技术栈、检查已有 Harness，生成协调层资产，再逐仓初始化和注册，最后给出一张汇总表。前端、后端和协调层不需要分别调用三次。只有职责或技术栈无法确定时才需要补充信息。
+
+已有项目重复执行时，相同内容跳过、缺失项补齐、本地定制保留，需要替换的文件列出差异。某仓失败后修正原因，再在协调层执行同一命令即可继续；已成功的兄弟仓库不会重建。
+
+协调层暂时没有 Git 也可完成初始化；需要提交协调资产前再建立版本控制。接口契约或联调命令尚不明确时保留待配置项，不能用示例命令宣称联合验证通过。
+
+Codex 的注册按实际可见范围去重：同内容的个人技能可复用，语言技能使用 `*-front`、`*-java` 等渲染名称；协调层按路径调度子仓技能。直接打开子仓也要检查入口可用，不能依赖跨 Git 根继承。原始包同时装在项目和个人范围造成的历史重复会单独报告，不自动删除。
 
 ## 与参考项目的对应关系
 
@@ -60,11 +75,10 @@ process-platform-backend（独立 Git 仓库）
 
 ## 推荐落地顺序
 
-1. 在当前父目录初始化 coordinator 仓库，或选择一个已有平台仓库承载 `.harness/`。
-2. 执行 `repo-discovery`，生成并确认 `.harness/repo-map.yaml`。
-3. 执行 `apply-harness` 时分别在前端和后端仓库生成本地 Harness。
-4. 为工作空间增加 `workspace-change.md` 模板和联合门禁脚本。
-5. 将 `harness-api-mock` 接入契约版本，前端 mock 与后端契约使用同一来源。
-6. 在 CI 中按“契约检查 → 前端/后端本地门禁 → 联合 E2E → 发布对账”执行。
+1. 安装一次技能包，选择个人或项目范围，避免同一套包在两个范围重复安装。
+2. 在前后端共同父目录执行一次 `apply-harness`，查看协调层与各子仓的初始化、注册和门禁状态。
+3. 补齐汇总中未确定的契约来源和联调入口；需要提交协调资产时建立 coordinator Git 仓库。
+4. 用 `workspace-orchestrator start` 发起全栈需求，前端 mock 与后端契约引用同一版本。
+5. 在 CI 中按“契约检查 → 前端/后端本地门禁 → 联合 E2E → 发布对账”执行。
 
 新需求默认 artifact_mode: compact：协调层只保留 workspace-change.md + 六阶段 report.md，子仓各一份执行卡；review-check 读取共享报告，不复制子仓 review.md。临时输出放 changes/.runtime/，不按每次运行保存两仓完整 diff。详见 [变更管理](../change-management.md)。

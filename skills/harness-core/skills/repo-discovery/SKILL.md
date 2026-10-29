@@ -20,16 +20,18 @@ description: 多仓库工作空间的仓库发现与能力匹配。扫描独立 
 
 仓库内的 `.harness/` 仍是该仓库的规则、技能、变更和本地门禁的事实源；工作空间层只记录编排关系，不复制仓库内规则。
 
+由 `apply-harness` 初始化调用时，只执行下文 1~2 的发现与登记，返回仓库表供同一次调用继续逐仓初始化；不要求用户再次执行技能，也不执行 3~4 的需求路由和建卡。新仓库尚无 `.harness/` 记为待初始化，不作为发现失败；初始化模式的完成标志是路径与 Git 根已核验、映射已登记，业务契约与联调命令可暂列待配置。
+
 ## `repo-map.yaml` 最小格式
 
 ```yaml
 version: 1
-workspace: process-platform
+workspace: demo
 repos:
   - id: frontend
-    path: ./process-platform-frontend
+    path: ./demo-frontend
     role: frontend
-    git_root: ./process-platform-frontend
+    git_root: ./demo-frontend
     harness: .harness
     keywords: [页面, 前端, 交互, 路由]
     contracts:
@@ -37,9 +39,9 @@ repos:
     gates:
       command: bash .harness/scripts/harness-gate.sh all all
   - id: backend
-    path: ./process-platform-backend
+    path: ./demo-backend
     role: backend
-    git_root: ./process-platform-backend
+    git_root: ./demo-backend
     harness: .harness
     keywords: [接口, 服务, 数据库, 后端]
     contracts:
@@ -49,7 +51,7 @@ repos:
 contracts:
   - id: backend-api
     source: backend
-    path: process-platform-backend/.harness/wiki/接口协议.md
+    path: demo-backend/.harness/wiki/接口协议.md
     consumers: [frontend]
 coordination:
   change_root: .harness/changes
@@ -66,7 +68,7 @@ coordination:
 从当前目录向下扫描，识别：
 
 - 当前目录是否是 Git 根；
-- 一层或多层子目录中的 `.git`；
+- 一层或必要的业务子目录中的 `.git` 目录或文件（支持 worktree/submodule）；跳过依赖、构建产物和技能缓存，独立仓库边界之外不继续递归，已有映射或明确指定的嵌套仓除外；
 - 每个仓库的语言、框架、构建工具和已有 `.harness/`；
 - 仓库是否存在未提交变更。
 
@@ -83,6 +85,7 @@ git -C <path> status --short --branch
 
 - 没有 `.harness/repo-map.yaml`：根据扫描结果生成初稿，并标记需要人确认的职责、契约和联调命令；
 - 已有映射：校验路径、Git 根、职责和 `.harness` 是否存在；
+- 更新时保留既有仓库 id、契约、门禁及自定义字段，只合并已核实的新信息；
 - 路径失效、职责冲突或同一关键词命中多个仓库时，停止自动路由，列出候选项；
 - 根目录不是 Git 仓库时，明确声明“工作空间协调层未被版本控制”，并建议使用 coordinator 仓库。
 

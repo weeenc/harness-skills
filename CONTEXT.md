@@ -68,8 +68,10 @@ harness-skills/
 
 多个独立 Git 仓库保持各自的 `.harness/`、Git 历史和本地门禁；工作空间协调层通过 `repo-map.yaml`、workspace change 和联合门禁编排全栈需求。相关技能为 `repo-discovery` 与 `workspace-orchestrator`。
 
+初始化入口为协调层一次 `apply-harness`：发现仓库、生成协调资产、逐仓初始化、分别注册、统一汇总。重复调用默认检查与补缺，保留本地定制；一个子仓失败不重建其他仓库。单独从子仓调用时范围仅限该仓库。
+
 ---
 
 > **使用方式**: AI 在对话开始时优先读取此文件以快速建立上下文。
-> **技能注册**: 执行 `/apply-harness` 后，运行 `/install-skill` 将 `.harness/skills/` 下的技能注册到当前 AI 工具（支持 19+ 主流工具：reasonix / claude-code / cline / cursor / codex / qoder / trae / codebuddy / lingma / windsurf / copilot 等）可识别的技能目录，使 `/harnessing`、`/harness-me` 等斜杠命令可用。
+> **技能注册**: `apply-harness` 自动执行 `install-skill` 的统一注册流程；已有项目拉取后或注册失败时可单独调用。Codex 新入口使用项目 `.agents/skills/`，按当前作用域比较项目与个人入口；同内容复用，同名不同内容报告冲突，不自动改动个人安装。
 > 发现新术语或决策时，应同步更新此文件。

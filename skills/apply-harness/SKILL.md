@@ -1,12 +1,12 @@
 ---
 name: apply-harness
-description: 自动检测项目语言与框架（Java / Python / Go / Rust / PHP / Frontend，支持 Spring Boot / Quarkus / Django / Gin / Axum / Laravel / React / Vue 等主流框架）并应用 Harness 开发规范体系
+description: 初始化或补齐 Harness 开发规范；自动检测项目语言与框架，支持在协调层一次初始化前后端独立 Git 仓库及协调资产
 disable-model-invocation: true
 ---
 
 # Apply Harness — 一键应用 Harness 开发规范体系
 
-> 在任意项目根目录执行此命令，自动检测项目语言、框架与构建工具，生成 `.harness/` 目录（含 Owner Agent 定义、规则、技能、变更追踪、领域知识库）。
+> 在单仓库根目录或全栈工作空间的协调层执行一次，自动检测技术栈并初始化对应的 `.harness/`。已有项目默认检查与补缺；技能注册随初始化完成，不要求用户再逐仓调用命令。
 
 ---
 
@@ -14,16 +14,23 @@ disable-model-invocation: true
 
 ### Step 0: 判断单仓库还是多仓库工作空间
 
-在检测语言之前，先判断当前目录是否为工作空间根：
+先遵守用户明确指定的仓库范围；用户从协调层要求初始化全栈时，默认包含协调层与发现的前后端仓库。
 
-1. 用 `git rev-parse --show-toplevel` 判断当前目录是否是 Git 根；
-2. 扫描一层及必要的业务子目录，识别包含 `.git` 的独立仓库；
-3. 若发现两个及以上独立 Git 仓库，标记为 **multi-repo workspace**：分别在每个代码仓库执行本技能，并在工作空间层使用 `repo-discovery` 与 `workspace-orchestrator`；
-4. 不要把父目录的 `.harness/` 复制到所有子仓库，也不要从父目录推断子仓库的 `git diff`、构建命令或门禁状态。
+1. 记录调用目录的绝对路径，用 `git -C <path> rev-parse --show-toplevel` 验证 Git 根；`.git` 可以是目录，也可以是 worktree/submodule 的文件。
+2. 优先校验已有 `.harness/repo-map.yaml`，再扫描一层及必要的业务子目录。跳过依赖、构建产物和技能包缓存；发现独立仓库后不继续把它的普通子目录算作另一个仓库。
+3. 发现两个及以上独立子仓库，或已有工作空间映射时，进入 **multi-repo workspace**。映射损坏或路径失效时保留并报告待处理项，不退回单仓模式给父目录渲染语言配置。若当前目录自己也是业务应用，协调层角色不明确时才询问，不擅自改成纯协调仓。
+4. 工作空间模式读取并执行 [一次初始化全栈工作空间](references/workspace-init.md)，在本次调用内完成协调层和各子仓；子仓直接执行 Step 1~8，不重新向上发现协调层。结束后返回工作空间汇总，不在父目录继续执行语言初始化。
+5. 单仓库模式继续 Step 0.1 和 Step 1~8。从子仓单独调用时只处理当前仓库，不扩大到兄弟仓库。
 
-多仓库工作空间的协调文件为 `.harness/repo-map.yaml` 和 `.harness/changes/WS-*/workspace-change.md`。工作空间模式只生成协调层资产（repo-map、workspace change 模板、`repo-discovery`、`workspace-orchestrator` 和联合门禁入口），不生成语言 Owner、语言规则或把一个子仓库当成项目根。工作空间根目录没有 Git 时，应提示创建独立 coordinator 仓库，以便这些文件可版本化。
+### Step 0.1: 已有项目的补齐与续跑规则
 
-进入工作空间模式后，先在 coordinator 根目录初始化 `.harness/` 的协调资产（包含 `templates/changes/README.md`、`.gitignore`、workspace-change/local-change/report 模板，以及无需语言参数的 `templates/scripts/report.sh`、`review-check.sh`；已有忽略文件只合并 `/.runtime/`，不覆盖原规则），再分别进入每个代码仓库执行后续语言检测和本地 Harness 初始化；不要在父目录继续执行单仓库的 Step 1~7。
+以下规则适用于协调层与每个子仓，并约束后文的所有复制、渲染和配置合并步骤：
+
+- **不存在**：生成；**内容相同**：跳过，不改时间戳；**已有不同内容**：保留本地版本，列出路径与差异。符合当前项目的定制规则不因不同于模板而判为失败。
+- 默认调用不是升级或重置。缺失文件可补齐；技术栈改变、未替换占位符、配置不兼容或需要替换已有文件时，先展示具体更新范围，沿用已有授权，否则等待该项决定；其他独立仓库继续。
+- 不因 `.harness/` 已存在就整目录询问覆盖；不覆盖 wiki、tech、CONTEXT、历史 changes、手工规则和宿主配置。忽略规则只追加缺失项，hooks 按事件、matcher、命令去重合并。
+- 中断后再次调用，重新检查真实文件和注册入口，跳过已完成项，仅继续缺失或失败项；不把“目录存在”或上次摘要当成成功证据。
+- 写入受现有 hooks 保护的 Harness 配置前，在当前根临时创建 `.harness/.applying`。成功或失败离开该根时均清理本次创建的标记；发现旧标记先确认无其他初始化正在使用，不把它当成初始化完成。
 
 ### Step 1: 检测项目语言与框架
 
@@ -229,8 +236,8 @@ disable-model-invocation: true
 
 ### Step 4: 复制规则文件
 
-1. 从 `harness-core/rules/` 复制通用规则到 `.harness/rules/`
-2. 从 `harness-{lang}/rules/` 复制语言特有规则到 `.harness/rules/`（同名覆盖）
+1. 从 `harness-core/rules/` 读取通用规则，先在内存或临时目录组装，不提前写入项目
+2. 从 `harness-{lang}/rules/` 选取语言特有规则（与 core 同名时语言包优先），先组装待生成内容，再按 Step 0.1 写入 `.harness/rules/`
 
 ```
 .harness/rules/
@@ -283,7 +290,7 @@ disable-model-invocation: true
     - `legacy-bootstrap` — 老系统冷启动（submodule 关联 src/、清洗 SKILL、采访稿）
     - `knowledge-health` — 知识健康检查（重复/冲突/失效链接/无来源结论）
 
-4. **清理残留技能目录**：删除 `.harness/skills/{lang}/` 下在本仓库中已不存在的旧技能目录（如旧版本语言包中的 `agents/`、旧版专属技能等），确保 `.harness/skills/` 仅包含当前渲染的技能，无残留文件干扰。
+4. **检查残留技能目录**：列出 `.harness/skills/{lang}/` 中不再由当前模板提供的目录，区分旧版本产物与项目自定义技能；默认保留。只有明确升级/清理授权并核对引用后才移出注册范围，不自动删除。
 
 **模板化技能清单**（10 个流水线技能的核心逻辑均来自 `harness-core/skills/` 模板，语言差异通过 `{{PLACEHOLDER}}` 表达；语言包不再维护同名副本）：
 
@@ -399,95 +406,15 @@ disable-model-invocation: true
     └── knowledge-health/          # 知识健康检查（重复/冲突/失效链接/无来源结论）
 ```
 
-### Step 5.5: 检测当前 AI 工具并生成技能目录
+### Step 5.5: 统一注册技能
 
-> 将 `.harness/skills/` 下的技能注册到当前 AI 工具可识别的技能目录，使 `/harnessing`、`/harness-me` 等斜杠命令立即可用。
+在当前目标根执行 `install-skill` 的工作流程，复用其宿主检测、作用域去重、复制和验证规则；不要在这里另维护一套注册算法，也不要求用户手动再次调用。先从当前技能包或可用技能目录定位并读取 `install-skill/SKILL.md`；Codex 还需读取它链接的注册参考文档。若找不到该技能，继续完成资产初始化，明确记录注册未完成和缺失依赖，不临时回退到盲目复制整个包。
 
-**本步骤是必需步骤，非可选。** 若检测失败或目录不存在，**必须创建目录**并注册技能。
+输入为**当前目标根自己的** `.harness/skills/`。新入口放在检测到的项目技能目录；Codex 使用 `.agents/skills/`。已存在的个人入口只参与可见性和内容检查，不写入个人技能目录。宿主检测与 Step 7.3 的 hooks 检测分别处理，技能目录不是 hooks 配置目录。
 
-#### 5.5.1 检测当前 AI 工具
+注册以渲染后的 frontmatter `name` 为标识和目录名，例如 `coding-skill-front` 与 `coding-skill-java`。同名同内容且在当前作用域可用时复用；同名不同内容或已经有多个入口时列为冲突，不直接覆盖或再复制一份。工作空间模式在协调层和各子仓分别执行，并将结果交给工作空间汇总。
 
-按优先级检测当前运行的 AI 工具。检测顺序：**先检查环境变量（精确），再检查目录存在（模糊）。**
-
-| 优先级 | 检测条件 | 推断工具 | 目标技能目录 |
-|--------|---------|---------|-------------|
-| 1 | `REASONIX` 环境变量存在 或 `.reasonix/` 目录存在 | **Reasonix** | `.reasonix/skills/` |
-| 2 | `CLAUDE_CODE` 环境变量存在 或 `.claude/` 目录存在 | **Claude Code** | `.claude/skills/` |
-| 3 | `CLINE` 环境变量存在 或 `.cline/` 目录存在 | **Cline / Roo Code** | `.cline/skills/` |
-| 4 | `.cursor/` 目录存在 | **Cursor** | `.cursor/skills/` |
-| 5 | `OPENAI_API_KEY` 环境变量存在 或 `.codex/` 目录存在 | **Codex (OpenAI)** | `.codex/skills/` |
-| 6 | `.qoder/` 目录存在 | **Qoder** | `.qoder/skills/` |
-| 7 | `.vscode/` 目录存在（VS Code 1.98+） | **VS Code Agent Skills** | `.vscode/agent-skills/` |
-| 8 | `.windsurf/` 目录存在 | **Windsurf** | `.windsurf/workflows/` |
-| 9 | `.continue/` 目录存在 | **Continue.dev** | `.continue/skills/` |
-| 10 | `.github/` 目录存在 | **GitHub Copilot** | `.github/skills/` |
-| 11 | `.opencode/` 目录存在 | **OpenCode** | `.opencode/commands/` |
-| 12 | `.trae/` 目录存在 | **Trae** | `.trae/rules/` |
-| 13 | `.codebuddy/` 目录存在 | **CodeBuddy** | `.codebuddy/` |
-| 14 | `.lingma/` 目录存在 | **通义灵码** | `.lingma/` |
-| 15 | `.codegeex/` 目录存在 | **CodeGeeX** | `.codegeex/` |
-| 16 | `.tabnine/` 目录存在 | **Tabnine** | `.tabnine/guidelines/` |
-| 17 | `.cody/` 目录存在 | **Sourcegraph Cody** | `.cody/` |
-| 18 | `.mars/` 目录存在 | **MarsCode** | `.mars/` |
-
-> **Gemini CLI / Codex 的 hooks 生成检测见 Step 7.3**（与技能注册解耦、多宿主并行）：
-> `GEMINI_CLI` 环境变量或 `.gemini/` 目录 → Gemini CLI hooks；`.codex/` 目录 → Codex hooks（技能注册表不为此改变目标目录）。
-
-> **检测逻辑**：① 按上表顺序检测；② 优先选择环境变量匹配的工具（精确匹配）；③ 若环境变量未匹配，按优先级检测目录是否存在；④ 选择第一个匹配的，确定目标技能目录。
-
-#### 5.5.2 创建目标目录（若不存在）
-
-确定目标技能目录后，若该目录不存在，**必须创建**：
-
-```bash
-# 例如检测到 Reasonix，目标目录为 .reasonix/skills/
-mkdir -p .reasonix/skills/
-# 或检测到 Claude Code，目标目录为 .claude/skills/
-mkdir -p .claude/skills/
-# 其他工具同理，确保目标技能目录存在
-```
-
-> **关键**：不要因为目录不存在就跳过——创建它。安装引擎的职责之一是"为当前 AI 工具准备好技能基础设施"。
-
-#### 5.5.3 扫描技能来源
-
-扫描 `.harness/skills/` 下所有含 `SKILL.md` 的技能目录：
-
-- 语言特有技能：`.harness/skills/{lang}/`（如 `harnessing`、`coding-skill`、`unit-test-write` 等）
-- 跨语言通用技能：`.harness/skills/common/`（如 `domain-modeling`、`research`、`resolving-merge-conflicts` 等）
-
-#### 5.5.4 复制安装技能
-
-对每个含 `SKILL.md` 的技能目录 `<skill-name>`：
-
-1. 完整复制到 `<目标技能目录>/<skill-name>/`（保持目录结构和所有文件）
-2. 保持 `SKILL.md` 的 frontmatter `name` 不变——斜杠命令名即来自它
-3. 若目标已存在同名技能，**覆盖**（或询问用户是否覆盖）
-
-#### 5.5.5 输出安装摘要
-
-```
-╔══════════════════════════════════════════╗
-║   ✅ 技能已安装到 <工具名>               ║
-╠══════════════════════════════════════════╣
-║  目标目录: .reasonix/skills/             ║
-║  已安装:   N 个技能                      ║
-║  /harnessing        ✅ 可调用            ║
-║  /harness-me        ✅ 可调用            ║
-║  /coding-skill      ✅ 可调用            ║
-║  /unit-test-write   ✅ 可调用            ║
-║  /expert-reviewer   ✅ 可调用            ║
-║  /unit-test-ci      ✅ 可调用            ║
-║  /deploy-verify     ✅ 可调用            ║
-║  /diagnosing-bugs   ✅ 可调用            ║
-║  /arch-review       ✅ 可调用            ║
-║  /handoff           ✅ 可调用            ║
-║  /domain-modeling   ✅ 可调用            ║
-║  ...                                    ║
-╚══════════════════════════════════════════╝
-```
-
-> 若自动注册成功，技能命令立即可用。若全部失败（如所有工具目录均不存在且无法创建），在 Step 8 的输出卡片末尾提示用户手动执行 `/install-skill`。
+返回实际新增、复用、冲突、失败的数量、来源路径和可调用名称。缺失或冲突不能标为成功；成功时直接进入需求流程，注册失败时才提示在对应根重试 `/install-skill`。
 
 ### Step 6: 初始化变更追踪
 
@@ -576,7 +503,7 @@ mkdir -p .claude/skills/
 > 补上 §1.1 三层结构中「门禁」层的实现物：确定性检测脚本 + 宿主 hooks 触发器。
 > 原则：**能机器验证的绝不靠自觉；工具未安装的显式降级，绝不静默跳过。**
 
-0. **挂载规范流程豁免标记**：`touch .harness/.applying`——生成期间 hooks/插件对配置区写入放行（新增/改写 scripts/hooks/rules/gate-config.json 等不会被守卫 block），并随写增量同步克隆区基线；避免 hooks 把本次规范生成误判为「直改」。
+0. **复用 Step 0.1 的临时豁免标记**：受 hooks 保护的配置生成期间使用 `.harness/.applying`，并随写增量同步克隆区基线；当前根处理结束时，无论成功或失败均清理本次创建的标记。
 
 1. **复制检测脚本**：从 `harness-core/templates/scripts/` 复制到 `.harness/scripts/`（README.md + 9 个脚本），并替换以下占位符为 Step 1 参数表对应值：
    - `{{LINT_CMD}}` / `{{VET_CMD}}` / `{{COV_CMD}}` / `{{ARCH_TEST_CMD}}` / `{{SECURITY_CMD}}`（命令）
@@ -651,12 +578,13 @@ mkdir -p .claude/skills/
 ║  Owner:  已就绪                          ║
 ║  门禁:   scripts×8 + hooks×6 + 插件×2    ║
 ╠══════════════════════════════════════════╣
-║  下一步: 注册技能到当前工具              ║
-║  /install-skill                          ║
-║  然后创建你的第一个变更:                  ║
-║  /harnessing 一句话描述需求            ║
+║  注册: 按实际结果列出新增/复用/冲突       ║
+║  下一步: 使用已验证的语言技能创建需求     ║
+║  例如 /harnessing-java 一句话描述需求     ║
 ╚══════════════════════════════════════════╝
 ```
+
+> 卡片中的数量、命令和成功状态必须根据本次结果填写；存在冲突或失败时注明部分完成。仅注册未完成时提示 `/install-skill`。工作空间模式使用 workspace-init 的汇总表，避免让用户重复处理每个子仓的下一步。
 
 > **生成后首件事**：先做「落地确认清单」三项 + hooks 连通性自测（见本包 `docs/harness-usage.md` 第 1.3/1.5 节），再开工。后续日常开发/发布收口/配置变更/故障排查的操作清单都在那份手册里——它也是唯一被持续维护的使用说明。
 
@@ -2581,9 +2509,9 @@ mkdir -p .claude/skills/
 
 ## 约束
 
-- ❌ 禁止修改已存在的 `.harness/` 内容（除非用户明确要求覆盖）
-- ❌ 禁止在检测到多语言时擅自选择
-- ❌ 禁止跳过 Step 1 直接使用默认语言
-- ✅ 如果 `.harness/` 已存在，输出提示并询问是否覆盖
-- ✅ 每个步骤完成后输出简要状态
+- ✅ 已有项目按 Step 0.1 检查与补缺；保留本地定制、知识与历史，升级覆盖需明确范围。
+- ❌ 禁止在单仓多语言且无法确定用途时擅自选择；独立前后端仓库分别检测。
+- ❌ 禁止跳过 Step 1 给子仓套用默认语言；协调层不执行语言渲染。
+- ✅ 多仓模式一次调用完成所有已确定的初始化项，失败按仓隔离，最终统一汇总。
+- ✅ 技能注册只使用 install-skill 协议；不依赖同名覆盖，不擅自修改个人安装。
 ---

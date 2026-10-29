@@ -67,7 +67,7 @@ compact 不另建 review/verify/archive/quality-report/diagnosis/e2e/gate 文档
 
 ## 同事拉取仓库后接入
 
-已有 `.harness/` 随 Git 拉取后，使用 `/install-skill` 注册仓库内技能即可：它读取 `.harness/skills/`，更新当前工具的技能副本，不重新生成 changes/wiki/tech/rules。工具目录中同名技能可能被覆盖。
+已有 `.harness/` 随 Git 拉取后，使用 `/install-skill` 注册仓库内技能即可：它读取 `.harness/skills/`，复用一致的可见入口或新增缺失入口，不重新生成 changes/wiki/tech/rules。同名不同内容会报告冲突，不盲目覆盖。首次 `apply-harness` 已自动执行该注册流程。
 
 `/apply-harness` 是初始化/更新入口，原规则禁止未经明确授权覆盖已有 `.harness/`；不要把它当成每人拉取后的必跑初始化。确需升级时对比并合并技能、模板和脚本，保留项目适配与历史报告。新增 ignore 规则不会取消已跟踪文件的 Git 跟踪，历史清理应单独审阅。
 
