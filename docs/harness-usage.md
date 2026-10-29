@@ -35,15 +35,17 @@
 
 判定：你的 AI 工具现在能列出 `apply-harness`、`harnessing`、`coding-skill-*` 等命令——**先注册，再开工**，顺序反了后面的流水线全是摆设。
 
+原始技能包选择个人或项目一个安装范围即可。Codex 已有个人安装时不要再向项目复制整包，否则菜单可能同时出现“项目名”和“个人”的同名项。
+
 ### 1.2 起手 apply-harness（生成规范骨架）
 
-在**目标项目根目录**的 AI 对话里：
+在**目标项目根目录**的 AI 对话里执行；前后端是独立 Git 仓库时，在两者的**共同父目录（协调层）**执行一次：
 
 ```
 /apply-harness
 ```
 
-它会自动完成 8 步：检测语言/框架（Java / Python / Go / Rust / PHP / Frontend 及各主流框架）→ 生成 `.harness/agents/owner.md` → 复制规则 → 渲染技能模板 → 检测宿主 → 初始化变更追踪 → 初始化领域知识库 → 初始化确定性门禁层（scripts + hooks）→ 输出摘要卡片；技能**注册**由 1.3② 的 `/install-skill` 完成。
+它会检测语言/框架、生成 Owner 与规则、渲染技能、自动注册、初始化变更追踪/知识库/门禁层并输出摘要。全栈模式先生成协调资产，再分别在前后端执行本地初始化，最后统一汇总，无需三次调用。重复执行只补缺，已有定制保留；失败修复后仍从协调层执行同一命令续跑。
 
 > 宿主检测：Claude Code / Gemini CLI / Codex CLI / Cline / OpenCode 五宿主。检测到哪个生成哪个配置（`.claude/settings.json` / `.gemini/settings.json` / `.codex/hooks.json` / `.cline/plugins/` / `.opencode/plugin/`）；未检测到的宿主按技能文本兜底（卡片会注明）。
 
@@ -55,10 +57,13 @@ ls .harness/
 # 预期：agents/ rules/ skills/ changes/ wiki/ CONTEXT.md scripts/ hooks/ gate-config.json 都在
 ```
 
+上面是单仓检查清单；全栈模式在各子仓分别检查。协调层只检查 repo-map、协调技能、changes 模板及共享报告脚本，不要求语言 Owner、语言规则或业务 hooks。
+
 ```bash
-# ② 确认技能已注册（命门，别跳过）
-/install-skill        # 或你在 1.1 用的安装方式
-/harnessing           # 能弹出建卡命令即注册成功；弹不出→回头看 1.1
+# ② 确认摘要中列出的实际技能入口可用
+# 全栈使用 workspace-orchestrator；单仓使用 harnessing-java / harnessing-front 等
+# 仅注册未完成或拉取已有项目后需要注册时，才执行：
+/install-skill
 ```
 
 ```bash
