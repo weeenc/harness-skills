@@ -66,7 +66,7 @@ harness-skills/
 
 ## 多仓库工作空间
 
-多个独立 Git 仓库保持各自的 `.harness/`、Git 历史和本地门禁；工作空间协调层通过 `repo-map.yaml`、workspace change 和联合门禁编排全栈需求。相关技能为 `repo-discovery` 与 `workspace-orchestrator`。
+多个独立 Git 仓库保持各自的 `.harness/`、Git 历史和本地门禁；工作空间协调层通过 `repo-map.yaml`、workspace change 和联合门禁编排全栈需求。协调层可以是业务仓库共同父目录，也可以是与业务仓库同级的独立 coordinator 仓库；同级布局以协调层为根使用 `../<repo-dir>` 相对路径，职责由技术栈检测和用户确认决定。相关技能为 `repo-discovery` 与 `workspace-orchestrator`。
 
 初始化入口为协调层一次 `apply-harness`：发现仓库、生成协调资产、逐仓初始化、分别注册、统一汇总。重复调用默认检查与补缺，保留本地定制；一个子仓失败不重建其他仓库。单独从子仓调用时范围仅限该仓库。
 

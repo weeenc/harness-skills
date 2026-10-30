@@ -6,7 +6,9 @@
 
 记录协调层绝对路径。读取已有 repo-map 的仓库 id、相对路径、职责、契约与门禁配置；保留用户已有字段，只合并新发现项。每个候选路径都用 `git -C <path> rev-parse --show-toplevel` 和 `git -C <path> status --short --branch` 验证。规范化路径去重，但不能按 Git common-dir 去重而丢失不同 worktree。
 
-扫描 `.git` 目录或文件，跳过 `.git` 内部、`node_modules`、`.venv`、`vendor`、`target`、`dist` 和技能安装目录；到达一个独立仓库后停止向下发现，已有映射或用户明确指定的嵌套仓库除外。不遍历符号链接跳出协调层；外部仓库仅在已有映射或用户明确指定时处理。
+扫描 `.git` 目录或文件，跳过 `.git` 内部、`node_modules`、`.venv`、`vendor`、`target`、`dist` 和技能安装目录；到达一个独立仓库后停止向下发现，已有映射或用户明确指定的嵌套仓库除外。不遍历符号链接跳出协调层。
+
+若协调层是与业务仓库同级的独立目录，额外检查协调层共同父目录下的直接兄弟目录。当前目录已有 `repo-map`、用户明确指定为 coordinator，或当前目录没有业务语言入口且共同父目录下存在可识别的独立业务 Git 仓库时，均可判定为这种布局。只纳入已有 `repo-map`、用户明确指定或可识别技术栈的独立 Git 仓库，不把其他兄弟项目自动加入工作空间；仓库目录名不用于推断职责，不继续扫描父目录的上级。若候选过多或职责不唯一，先列出候选路径和检测结果，询问用户确认纳入范围与角色。登记路径时以协调层为基准，例如 `../<repo-dir>`，并用 `git -C <path>` 验证真实 Git 根。
 
 展示一张执行表：仓库 id、相对路径、角色、语言/框架、已有 Harness 状态、准备新增/补齐/沿用的内容。前后端属于不同仓库时分别检测语言，不把它们误判为“单仓多语言，需要选择焦点语言”。只询问无法判断的职责、技术栈或失效路径；已确定项继续处理。用户明确只初始化一个子仓时，缩小范围。
 
@@ -16,7 +18,7 @@
 
 | 目标 | 来源与边界 |
 |---|---|
-| `.harness/repo-map.yaml` | 按 `repo-discovery` 的格式登记真实仓库；仅执行发现与登记，不执行其需求建卡步骤 |
+| `.harness/repo-map.yaml` | 按 `repo-discovery` 的格式登记真实仓库；同级布局使用相对协调层的 `../<repo-dir>`，职责由技术栈和用户确认决定；仅执行发现与登记，不执行其需求建卡步骤 |
 | `.harness/skills/common/repo-discovery/`、`workspace-orchestrator/` | 从 harness-core 的对应技能完整复制，包括支持文件 |
 | `.harness/changes/README.md`、`.gitignore` | 来自 `harness-core/templates/changes/`；已有忽略文件只补 `/.runtime/` |
 | `.harness/changes/_TEMPLATE/` | 只安装 workspace-change、local-change、report 模板；初始化时不创建 `WS-*` 或 `C-*` 需求 |
