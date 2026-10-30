@@ -1,6 +1,6 @@
 # 独立 Git 仓库的全栈开发支持
 
-前端和后端保持两个独立 Git 仓库，各自拥有 `.harness/agents/owner.md`、规则、skills、changes、脚本和 hooks。父目录作为协调层，负责仓库映射、跨仓需求和联合验证。
+前端和后端保持两个独立 Git 仓库，各自拥有 `.harness/agents/owner.md`、规则、skills、changes、脚本和 hooks。协调层负责仓库映射、跨仓需求和联合验证，可以是前后端的共同父目录，也可以是与前后端同级的独立 coordinator 仓库。
 
 推荐采用三层结构，并在 workspace change 中设置 `pipeline_mode: workspace_once`：
 
@@ -11,10 +11,45 @@ workspace coordinator（建议独立 Git 仓库，也可先用普通文件夹）
 ├── .harness/changes/（模板；有需求后创建 WS-*）
 ├── contracts/ 或契约仓库引用
 ├── scripts/workspace-gate.sh（真实联调命令确定后生成）
-├── demo-frontend/（独立 Git 仓库）
+├── web-console/（独立 Git 仓库，示例名称）
 │   └── .harness/
-└── demo-backend/（独立 Git 仓库）
+└── order-service/（独立 Git 仓库，示例名称）
     └── .harness/
+```
+
+如果协调层仓库需要与前后端包保持同级，可以使用以下布局：
+
+```text
+workspace/
+├── coordinator/（独立协调仓库）
+│   └── .harness/repo-map.yaml
+├── web-console/（独立 Git 仓库，示例名称）
+│   └── .harness/
+└── order-service/（独立 Git 仓库，示例名称）
+    └── .harness/
+```
+
+从 `coordinator/` 执行 `/apply-harness` 时，发现流程会检查共同父目录下的直接兄弟仓库，并在 `coordinator/.harness/repo-map.yaml` 中写入以协调层为基准的相对路径。`web-console`、`order-service` 只是示例名称；实际仓库目录名可以完全不同。其他兄弟项目不会因为处于同一父目录而自动加入；如果候选过多或职责无法判断，会先询问用户确认。
+
+对应的最小映射如下：
+
+```yaml
+version: 1
+workspace: demo
+repos:
+  - id: frontend
+    path: ../web-console
+    git_root: ../web-console
+    role: frontend
+    harness: .harness
+  - id: backend
+    path: ../order-service
+    git_root: ../order-service
+    role: backend
+    harness: .harness
+coordination:
+  change_root: .harness/changes
+  local_change_policy: linked
 ```
 
 工作空间协调仓库可以通过 Git submodule 固定前后端 commit，也可以只维护 clone 路径和 commit 清单。前者复现性更强；后者适合现有目录已经是两个独立仓库的情况，但必须把 commit SHA 写进 workspace change。
@@ -41,7 +76,7 @@ Codex 的注册按实际可见范围去重：同内容的个人技能可复用�
 
 需要补上的能力是：
 
-- 工作空间仓库地图：明确 `frontend`、`backend`、契约和联调入口；
+- 工作空间仓库地图：明确各业务仓库的路径、职责、契约和联调入口；
 - workspace change：把一个需求关联到多个 local change；
 - 契约单一来源：OpenAPI、事件 schema 或共享 DTO 必须有版本；
 - 联合门禁：逐仓执行本地门禁，再执行 API 兼容性、联调和 E2E；
@@ -76,7 +111,7 @@ Codex 的注册按实际可见范围去重：同内容的个人技能可复用�
 ## 推荐落地顺序
 
 1. 安装一次技能包，选择个人或项目范围，避免同一套包在两个范围重复安装。
-2. 在前后端共同父目录执行一次 `apply-harness`，查看协调层与各子仓的初始化、注册和门禁状态。
+2. 在协调层目录执行一次 `apply-harness`。协调层是共同父目录时扫描子目录；协调层与前后端同级时扫描共同父目录下的直接兄弟仓库，查看协调层与各子仓的初始化、注册和门禁状态。
 3. 补齐汇总中未确定的契约来源和联调入口；需要提交协调资产时建立 coordinator Git 仓库。
 4. 用 `workspace-orchestrator start` 发起全栈需求，前端 mock 与后端契约引用同一版本。
 5. 在 CI 中按“契约检查 → 前端/后端本地门禁 → 联合 E2E → 发布对账”执行。

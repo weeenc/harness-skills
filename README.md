@@ -22,13 +22,13 @@ Harness 是一个**人类设计约束、AI 写代码、机器验证**的开发�
 # 在任意项目根目录执行
 npx skills@latest add git@github.com:weeenc/harness-skills.git
 
-# 在目标项目根或前后端共同父目录的 AI 对话中键入
+# 在目标项目根或协调层的 AI 对话中键入
 /apply-harness
 ```
 
 安装原始技能包时选择个人或项目一个范围，避免同一套包双重安装。`apply-harness` 会生成 `.harness/` 并自动注册当前工具的技能入口；Codex 使用 `.agents/skills/`，同内容入口复用，同名不同内容报告冲突。再次执行默认补缺并保留定制，无需整包覆盖。
 
-全栈工作空间只需在协调层调用一次，不必前端、后端、协调层各执行一次；完成后从 `/workspace-orchestrator start WS-001 <全栈需求>` 开始，详见 [多仓库开发](docs/skills/multi-repo-development.md)。单仓项目通过语言技能驱动 6 阶段流水线（以下为流程简称，实际调用名以初始化摘要为准，如 `/coding-skill-java`）：
+全栈工作空间只需在协调层调用一次，不必前端、后端、协调层各执行一次；协调层可以是前后端共同父目录，也可以是与前后端同级的独立 coordinator 仓库。完成后从 `/workspace-orchestrator start WS-001 <全栈需求>` 开始，详见 [多仓库开发](docs/skills/multi-repo-development.md)。单仓项目通过语言技能驱动 6 阶段流水线（以下为流程简称，实际调用名以初始化摘要为准，如 `/coding-skill-java`）：
 
 ```bash
 # ① 需求分析 — 打磨需求，生成规格说明书
