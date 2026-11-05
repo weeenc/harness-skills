@@ -40,7 +40,7 @@
 
 ### Step 4: 复制规则文件
 
-- 从 `harness-core/rules/` 复制通用规则（SDD-TDD 模式、开发流程规范、变更定位规则、运行时可靠性）
+- 从 `harness-core/rules/` 复制通用规则（SDD-TDD 模式、开发流程规范、变更定位规则、知识库治理、Git 分支与提交、运行时可靠性）
 - 从 `harness-{lang}/rules/` 复制语言特有规则（编码规范、工程结构）
 
 ### Step 5: 渲染技能模板 + 复制技能文件

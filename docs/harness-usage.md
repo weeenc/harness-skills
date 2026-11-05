@@ -181,6 +181,8 @@ cat .harness/changes/.runtime/<id>/gate-coverage.md   # 最新本地摘要（含
 
 ### 3.3 提交 git（哪些要进版本库）
 
+提交前先确认当前工作分支符合 `.harness/rules/git-branch-and-commit.md`：使用 `feature/*`、`bugfix/*`、`hotfix/*`、`release/*`、`refactor/*`、`docs/*`、`test/*` 或 `chore/*`，禁止创建 `codex/*` 等 AI 工具名称开头的分支。commit message 首行使用 `<type>(<scope>): <subject>`，并在使用 `.harness/changes/` 时包含对应的变更 ID。
+
 ```bash
 git add --ignore-missing \
   .harness/agents/ .harness/rules/ .harness/skills/ .harness/wiki/ .harness/CONTEXT.md \
