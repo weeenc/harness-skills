@@ -54,7 +54,7 @@ npx skills@latest add git@github.com:weeenc/harness-skills.git
 
 AI 自动检测项目语言与框架（Java / Python / Go / Rust / PHP / Frontend，支持 Spring Boot / Spring Cloud Alibaba / Dubbo / Quarkus / Django / FastAPI / TensorFlow / PyTorch / LangChain / Gin / Beego / GoFrame / Kitex / Axum / Actix Web / Laravel / ThinkPHP / Symfony / React / Vue / Angular / Next.js 等 80+ 主流框架和构建工具），生成 `.harness/` 目录：
 - **Owner Agent** — 应用负责人智能体（灵魂，定义你是谁、怎么工作）
-- **Rules** — 5 条规则（SDD-TDD / 编码规范 / 工程结构 / 开发流程 / 运行时可靠性）
+- **Rules** — 6 类规则（SDD-TDD / 编码规范 / 工程结构 / 开发流程 / Git 分支与提交 / 运行时可靠性）
 - **Skills** — 30+ 个技能（6 流水线 + 3 通用辅助 + 3 场景辅助 + 18 封装组件 + 2 领域专家）
 - **Changes** — 默认每需求一张变更卡 + 一份六阶段 report.md；全栈仅协调层汇总，子仓保留执行卡，运行数据放被忽略的 changes/.runtime/（[协议与兼容说明](docs/change-management.md)）
 - **Wiki** — 领域知识库模板
