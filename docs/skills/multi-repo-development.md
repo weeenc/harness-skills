@@ -90,10 +90,15 @@ Codex 的注册按实际可见范围去重：同内容的个人技能可复用�
 
 ```text
 /workspace-orchestrator start WS-001 <全栈需求>
+```
+
+`start` 只完成需求分析、变更卡和报告，然后停止，等待实施授权；不会自动修改代码、测试、可执行契约或 mock。查看产物后，明确确认开始实施，或执行：
+
+```text
 /workspace-orchestrator run WS-001
 ```
 
-状态查询和中断后继续执行：
+状态查询和中断后继续执行（`resume` 仅在已有实施授权范围内恢复，不能绕过首次授权）：
 
 ```text
 /workspace-orchestrator status WS-001
@@ -113,7 +118,8 @@ Codex 的注册按实际可见范围去重：同内容的个人技能可复用�
 1. 安装一次技能包，选择个人或项目范围，避免同一套包在两个范围重复安装。
 2. 在协调层目录执行一次 `apply-harness`。协调层是共同父目录时扫描子目录；协调层与前后端同级时扫描共同父目录下的直接兄弟仓库，查看协调层与各子仓的初始化、注册和门禁状态。
 3. 补齐汇总中未确定的契约来源和联调入口；需要提交协调资产时建立 coordinator Git 仓库。
-4. 用 `workspace-orchestrator start` 发起全栈需求，前端 mock 与后端契约引用同一版本。
-5. 在 CI 中按“契约检查 → 前端/后端本地门禁 → 联合 E2E → 发布对账”执行。
+4. 用 `workspace-orchestrator start` 分析全栈需求并生成变更卡和报告，在文档中明确前端 mock 与后端契约使用同一版本。
+5. 查看分析产物，明确确认开始实施或执行 `workspace-orchestrator run` 后，才进入编码阶段。
+6. 在 CI 中按“契约检查 → 前端/后端本地门禁 → 联合 E2E → 发布对账”执行。
 
 新需求默认 artifact_mode: compact：协调层只保留 workspace-change.md + 六阶段 report.md，子仓各一份执行卡；review-check 读取共享报告，不复制子仓 review.md。临时输出放 changes/.runtime/，不按每次运行保存两仓完整 diff。详见 [变更管理](../change-management.md)。
