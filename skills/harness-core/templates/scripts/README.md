@@ -62,3 +62,7 @@
 `report.sh` 每类门禁只更新一个被忽略的运行摘要，只有 rc=0 为 PASS，rc=1/2 分别为 FAIL/DEGRADED，其余及未知为 ERROR。它不会写持久 report.md，也不会覆盖人工签名；旧 gate 文件保留作历史。详细协议见 `.harness/changes/README.md`。
 
 `review-check.sh <id>` 对 compact 卡检查 report.md 的④章节（review_status: complete、审查范围、双轴与引用）；子仓有 report_ref 时检查工作空间共享报告，引用错误不得回退本地旧报告。legacy 卡继续读取 review.md。此检查只验证结构，不代表严重问题为零。
+
+## 中文提交检查
+
+通用提交校验不依赖语言占位符。部署及 CI 接入见 [commit-policy.md](commit-policy.md)。`harness-gate.sh` 在各门禁前检查新增提交；独立运行可用 `bash .harness/scripts/harness-gate.sh commit-message`。安装失败或缺少基线不能作为通过。

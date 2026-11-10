@@ -169,3 +169,9 @@ harness-skills/
 
 > 📖 **完整文档中心**: [docs/README.md](docs/README.md)
 
+
+## 中文提交规范与校验
+
+初始化现在同时部署中文提交规范、根 AGENTS 提交入口、Git commit-msg 校验和 CI 范围检查。已有项目需按 [提交校验升级流程](skills/apply-harness/references/commit-policy.md) 合并配置，再同步项目技能注册副本；仅更新技能包或运行 install-skill 不会自动启用项目 Git hooks。默认保留既有历史基线和本地定制。远端流水线需实际接入检查才能强制生效。
+
+维护验证：`python3 -B -m unittest discover -s tests -v`。

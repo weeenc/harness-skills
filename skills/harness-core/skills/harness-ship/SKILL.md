@@ -32,7 +32,7 @@ description: 发布工作流——跑测试 → bump VERSION → 更新 CHANGELO
 
 ### Step 2: bump VERSION（机器执行）
 - 更新 `VERSION` / `package.json version` / `pom.xml <version>` 等版本文件（按语言包约定）
-- 提交：`chore(C-NNN): bump version to <ver>`
+- 提交：`chore(release): C-NNN 升级版本至 <ver>`
 
 ### Step 3: 更新 CHANGELOG
 - 追加新版本条目（链接到对应 change 的 report.md 的④/⑥章节）
@@ -96,3 +96,7 @@ description: 发布工作流——跑测试 → bump VERSION → 更新 CHANGELO
 ---
 
 
+
+## 提交信息校验
+
+每次提交前读取目标仓 `.harness/rules/git-branch-and-commit.md`，用中文 subject（保留英文标准 type 和技术标识），按规范填写变更 ID。候选 message 写入文件后运行 `python3 .harness/scripts/check-commit-message.py --message-file <文件>`；提交后及 CI 运行 `sh .harness/scripts/ci-commit-check.sh`。非零退出码须阻断，禁止绕过；提交前检查 0 条不代表提交后通过。merge/revert/发布提交同样适用。跨仓操作分别执行，协调仓也须校验。缺少脚本时按 apply-harness 的提交校验升级流程补齐，不能静默降级为口头检查；接入和基线说明见 `.harness/scripts/commit-policy.md`。

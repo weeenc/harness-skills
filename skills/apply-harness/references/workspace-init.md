@@ -23,10 +23,11 @@
 | `.harness/changes/README.md`、`.gitignore` | 来自 `harness-core/templates/changes/`；已有忽略文件只补 `/.runtime/` |
 | `.harness/changes/_TEMPLATE/` | 只安装 workspace-change、local-change、report 模板；初始化时不创建 `WS-*` 或 `C-*` 需求 |
 | `.harness/scripts/report.sh`、`review-check.sh` | 来自 core templates/scripts；无需语言参数 |
+| 中文提交规范、Git hook、校验脚本、AGENTS 提交约定 | 按 [提交校验初始化与升级](commit-policy.md) 执行；协调仓和子仓各自生成基线，不复制 SHA |
 
 协调层不安装某个子仓的 Owner、语言规则、构建脚本或业务 hooks，不复制整个子仓 `.harness/`，也不从子仓语言参数渲染父目录。
 
-repo-map 中的契约来源和联调命令必须来自项目实际配置；无法确定时留空并标记待配置，不能把示例命令当成已验证入口。只有真实命令确定后才生成或补齐联合门禁入口：逐仓在各自 cwd 执行本地门禁，再执行契约/联调检查，任何失败或降级均不得汇总为通过。初始化完成不代表联合门禁通过。
+repo-map 中的契约来源和联调命令必须来自项目实际配置；无法确定时留空并标记待配置，不能把示例命令当成已验证入口。只有真实命令确定后才生成或补齐联合门禁入口：先运行协调仓 `sh .harness/scripts/ci-commit-check.sh`，再逐仓在各自 cwd 执行本地门禁，再执行契约/联调检查，任何失败或降级均不得汇总为通过。初始化完成不代表联合门禁通过。
 
 协调层可以暂时没有 Git；继续初始化并标注“协调资产尚未版本控制”，无需为此阻塞前后端。建立 coordinator Git 仓库或调整 submodule 拓扑不属于隐式初始化步骤；已有 coordinator 的 `.gitignore` 可补入普通嵌套仓路径，已跟踪的 submodule 除外，不执行 `git add` 或改动子仓 Git 元数据。
 

@@ -506,12 +506,13 @@ disable-model-invocation: true
 
 0. **复用 Step 0.1 的临时豁免标记**：受 hooks 保护的配置生成期间使用 `.harness/.applying`，并随写增量同步克隆区基线；当前根处理结束时，无论成功或失败均清理本次创建的标记。
 
-1. **复制检测脚本**：从 `harness-core/templates/scripts/` 复制到 `.harness/scripts/`（README.md + 9 个脚本），并替换以下占位符为 Step 1 参数表对应值：
+1. **复制检测脚本**：从 `harness-core/templates/scripts/` 复制到 `.harness/scripts/`（以模板目录实际文件为准），并替换以下占位符为 Step 1 参数表对应值：
    - `{{LINT_CMD}}` / `{{VET_CMD}}` / `{{COV_CMD}}` / `{{ARCH_TEST_CMD}}` / `{{SECURITY_CMD}}`（命令）
    - `{{LINT_TOOL}}` / `{{COV_TOOL}}` / `{{ARCH_TEST_TOOL}}`（工具名）
    - `{{FILE_LIMIT}}`（单文件行数上限）
    - `{{DEP_RUNNERS}}` / `{{DEP_TOOLS}}` / `{{DEP_PROJECT}}`（门禁依赖清单，按新增的「门禁依赖·语言默认真值」表取当前语言行）
    - 参数表中为空或"未验证"的命令：**保留为空即可**，脚本运行时自动降级（退出码 2 + `[DEGRADED]` 标记），无需手动改写脚本。
+1.1. **安装中文提交校验（单仓和协调层都执行）**：读取 [提交校验初始化与升级](references/commit-policy.md)，部署通用规则、Git hook、脚本和 AGENTS 提交约定，执行安装与验证；不受宿主是否支持工具 hooks 的限制。
 2. **复制 hooks 运行时**：从 `harness-core/templates/hooks/` 复制到 `.harness/hooks/`（README.md + Claude/Codex 协议脚本 `pre/post/stop.sh` + `settings.json.tpl` + `gemini/` 子目录 + `codex/`、`cline/`、`opencode/` 配置模板）。
 3. **按检测宿主并行生成 hooks 配置**（与技能注册解耦，检测到哪个生成哪个；多宿主可共存）：
 
