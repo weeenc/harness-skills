@@ -152,7 +152,7 @@
 ## 7. 交付物清单（每个需求收口时）
 
 - [ ] 已使用合规工作分支（禁止 `codex/` 等 AI 工具前缀）
-- [ ] 代码已提交，commit message 符合 `<type>(<scope>): <subject>` 且含变更 ID
+- [ ] 代码已提交，commit message 符合 `.harness/rules/git-branch-and-commit.md`：中文 subject、合规格式及变更 ID；提交前 message 校验、提交后 `sh .harness/scripts/ci-commit-check.sh` 均通过
 - [ ] 单元测试通过，核心逻辑覆盖率 ≥ 80%
 - [ ] `expert-reviewer` 0 个严重问题
 - [ ] CI 全绿（静态分析 + 架构约束 + 测试）

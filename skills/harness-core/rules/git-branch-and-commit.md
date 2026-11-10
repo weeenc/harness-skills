@@ -1,8 +1,8 @@
 ---
 name: git-branch-and-commit
 scope: all repositories
-version: 1.0.0
-updated: 2026-11-05
+version: 1.1.0
+updated: 2026-11-10
 status: active
 ---
 
@@ -51,7 +51,7 @@ Commit message 的首行必须符合以下格式：
 
 - `type` 必须从下表选择。
 - `scope` 使用受影响的模块、领域或组件名称，保持简短；没有合理 scope 时使用仓库约定的统一 scope。
-- `subject` 使用简洁、明确的动词描述变更，首字母小写，不以句号结尾。
+- `subject` 必须使用简洁、明确的中文描述，以动词说明变更，不以句号结尾；允许保留 API、类名、版本号等技术标识，禁止纯英文描述。`type` 保留英文标准值，`scope` 可以使用模块英文名。
 - 一个 commit 只表达一个逻辑变更，避免把功能、重构和格式调整混在一起。
 
 | Type | 含义 | 使用场景 |
@@ -71,23 +71,33 @@ Commit message 的首行必须符合以下格式：
 示例：
 
 ```text
-feat(route): C-012 implement budget alert threshold
-fix(order): handle duplicate callback safely
-docs(api): update authentication examples
-style(web): format request components
-refactor(auth): extract token validation service
-perf(query): add index for order lookup
-test(budget): cover offline estimation fallback
-build(deps): upgrade framework version
-ci(checks): run static analysis on pull requests
-chore(tooling): update development scripts
-revert(api): revert breaking response change
+feat(route): C-012 新增预算告警阈值
+fix(order): C-012 修复重复回调处理
+docs(api): C-012 更新认证接口示例
+style(web): C-012 格式化请求组件
+refactor(auth): C-012 提取令牌校验服务
+perf(query): C-012 优化订单查询索引
+test(budget): C-012 补充离线估算降级测试
+build(deps): C-012 升级框架版本
+ci(checks): C-012 增加合并请求静态检查
+chore(tooling): C-012 更新开发脚本
+revert(api): C-012 回滚不兼容的响应变更
 ```
 
 如果仓库使用 `.harness/changes/`，commit message 必须包含对应的变更 ID（如 `C-012`）；推荐将它放在 subject 中，也可以放在 commit body 或 footer。这样既保持 `<type>(<scope>): <subject>` 格式，又能与变更卡追踪。
+
+## 3. 执行与校验
+
+- 每次提交前读取本规范；入口见仓库根目录 `AGENTS.md`。
+- 新克隆执行 `python3 .harness/scripts/install-commit-policy.py`，启用 `commit-msg`。
+- 提交前执行 `python3 .harness/scripts/check-commit-message.py --message-file <文件>`；提交后及 CI 执行 `sh .harness/scripts/ci-commit-check.sh`。
+- 机器检查格式、subject 包含中文、不以句号结尾、使用 `.harness/changes/` 时的变更 ID；描述的中文语义与准确性仍由评审确认。
+- merge、revert、squash 等提交同样适用，必须改写默认英文标题，不允许绕过校验。
+- 范围检查从 `.harness/commit-policy-base` 之后生效，不追溯修改历史提交；基线不得为规避违规而移动。CI 接入说明见 `../scripts/commit-policy.md`。
 
 ## 修订记录
 
 | 日期 | 变更摘要 | 审批人 |
 |---|---|---|
 | 2026-11-05 | 新增 Git 分支命名和 commit message 规范，禁止 AI 工具前缀分支 | 需求提出者（用户） |
+| 2026-11-10 | 统一中文示例、提交入口及本地/CI 校验，版本升级为 1.1.0 | 用户明确要求修正三个方面 |
