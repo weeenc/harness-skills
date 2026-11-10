@@ -33,9 +33,24 @@ description: 编排多个独立 Git 仓库的全栈变更。维护工作空间�
 /workspace-orchestrator resume WS-001
 ```
 
-`start` 创建 workspace change 并执行 ①；`run` 从当前状态继续执行到下一个需要人工决策的阶段；`resume` 在人工批准或修复后继续；`status` 汇总所有仓库的阶段、commit、门禁和阻塞项。用户不需要手动分别调用前端和后端的 `coding-skill-*`、`unit-test-*` 或 `deploy-verify-*`。
+| 命令 | 执行边界 |
+|---|---|
+| `start` | 创建 workspace change、共享报告及各仓库执行卡，只执行 ① 需求分析；完成后停下，等待实施授权。 |
+| `run` | 用户对指定 workspace change 发出的实施授权；从当前状态推进到下一个需要人工决策的阶段。 |
+| `resume` | 在已有实施授权的范围内，于人工批准或修复后继续；没有实施授权时仍停留在 ①。 |
+| `status` | 只汇总所有仓库的阶段、commit、门禁和阻塞项，不触发实施。 |
+
+用户不需要手动分别调用前端和后端的 `coding-skill-*`、`unit-test-*` 或 `deploy-verify-*`。
 
 如果宿主不支持带参数的斜杠命令，使用自然语言发送同样的意图，例如：“执行 workspace change WS-001，从当前阶段继续，按 single-pipeline 模式编排所有 required 仓库”。
+
+### ① → ② 的实施授权边界
+
+- `start` 只授权准备工作：读取仓库与 Git 状态、分析需求和契约、记录 REQ/AC 与分工、创建或更新变更卡和报告。不能修改业务代码、测试、可执行契约、mock、生成客户端或实施所需配置，也不能调用编码技能或把编码任务委派给子代理。
+- 完成 ① 后，workspace 保持 `status: analyzing`、`stage: harnessing`，新建 local change 保持 `analyzing`；报告①记录“等待实施授权”，②~⑥保持未执行。向用户给出卡片/报告位置、分析结论、未决问题和下一步 `run` 命令，然后结束本次 `start`。
+- 只有用户明确确认对该变更开始实施（如“确认 WS-001 方案，开始编码”），或用户实际发出 `run WS-001`（含明确等价的自然语言请求），才允许进入②。仅确认需求事实、回答分析问题、分析已完成、没有未决问题、用户沉默或报告里建议的 `run` 命令，都不构成实施授权；编排器不能自行调用 `run`。
+- 进入②前，在报告①的审批/关键决策中记录授权来源、用户原话或命令、授权范围；再将 workspace 更新为 `implementing` / `coding-skill` 并同步 local change。`run` 不代替尚未解决的需求、架构或发布决策。
+- `resume` 和子仓技能都必须读取该变更的授权记录；缺失时不能从准备产物或状态值推断已获授权。已记录的授权在其范围内继续有效，不要求各仓重复审批；单独执行 `start` 仍只做准备工作，不自动恢复实施。
 
 ## 两层状态
 
@@ -54,10 +69,10 @@ local repo: draft → analyzing → coding → testing → reviewing → ci → 
 
 ```yaml
 id: WS-001
-status: implementing
+status: analyzing
 pipeline_mode: workspace_once
 artifact_mode: compact
-stage: coding-skill
+stage: harnessing
 repos:
   - id: backend
     local_change: C-101
@@ -96,15 +111,17 @@ integration:
 1. 调用 `repo-discovery`，确认仓库、模块和 Git 状态。
 2. 在 workspace 变更卡中固定 API/事件/数据库契约的唯一来源。
 3. 为每个需要改动的仓库从 local-change.md 模板创建 change.md 执行卡，标记 artifact_mode: compact，填写 workspace_ref / report_ref，并记录关系；不复制整个模板目录。
-4. 先完成契约，再允许前后端并行编码；后端未就绪时，前端使用 `harness-api-mock`，mock 必须来自同一契约。
-5. 在工作空间的 ②~③ 阶段批量调度各仓库执行编码和测试，不重新启动各自的需求分析流程。
-6. 在 ④ 阶段聚合各仓库 diff，更新 workspace report.md 的④章节。
-7. 在 ⑤ 阶段按 `repo-map.yaml` 逐仓运行门禁，再运行契约兼容性和联合 E2E；命令必须使用 `git -C <repo>` 或进入对应仓库执行。
-8. 在 ⑥ 阶段的共享报告记录真实的 commit SHA、具名门禁结论和部署版本，按依赖顺序完成发布验证。
-9. 只有所有 required 仓库都通过，才将 workspace 变更卡置为 `done`。
+4. 完成①并更新共享报告；`start` 在此停止。只有满足上述实施授权边界后，才继续以下步骤。
+5. 先实现契约，再允许前后端并行编码；后端未就绪时，前端使用 `harness-api-mock`，mock 必须来自同一契约。
+6. 在工作空间的 ②~③ 阶段批量调度各仓库执行编码和测试，不重新启动各自的需求分析流程。
+7. 在 ④ 阶段聚合各仓库 diff，更新 workspace report.md 的④章节。
+8. 在 ⑤ 阶段按 `repo-map.yaml` 逐仓运行门禁，再运行契约兼容性和联合 E2E；命令必须使用 `git -C <repo>` 或进入对应仓库执行。
+9. 在 ⑥ 阶段的共享报告记录真实的 commit SHA、具名门禁结论和部署版本，按依赖顺序完成发布验证。
+10. 只有所有 required 仓库都通过，才将 workspace 变更卡置为 `done`。
 
 ## 必须阻断的情况
 
+- 没有用户明确实施确认或用户发出的 `run`，却试图从①进入②、修改实现文件或调度子仓编码；
 - 需求命中多个仓库，但没有 workspace change；
 - 前后端使用不同版本的接口契约；
 - 某仓库有未登记的工作区改动；

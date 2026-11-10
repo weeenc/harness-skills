@@ -84,7 +84,7 @@ description: 需求拷问引擎。使用场景：当用户要求"帮我理清需
 
 > **迭代协议（可选）**：复杂需求可改用机器可读协议，选用逻辑保持不变。先复制 `.harness/iterations/_TEMPLATE/` 为 `.harness/iterations/<ITER-ID>/`，再把 REQ/AC 落 `prd.md`，并在 `change.md` frontmatter 增加 `iteration: <ITER-ID>` 字段关联，供 ②~④ 对账（见 `开发流程规范.md §2.2`）。
 
-> **流水线联动**：完成需求分析后，建议用户进入流水线阶段 ①，创建正式变更卡并开始编码实现。
+> **流水线联动**：完成需求分析后，输出变更卡和报告，给出下一步建议。由 `workspace-orchestrator start` 调用时，到此停止并等待实施授权；只有用户明确确认开始实施或执行对应 workspace change 的 `run` 后，才进入②编码实现。需求问题的回答不等于实施授权。
 ---
 
 
