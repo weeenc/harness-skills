@@ -2,6 +2,10 @@
 
 新需求默认采用 `artifact_mode: compact`。精简范围是 `.harness/changes/` 的过程产物；wiki、tech、rules、领域知识回流及其他目录仍按原有逻辑维护。
 
+## 变更编号入口
+
+先查已有卡片，属于同一需求的后续工作复用原 ID。新需求使用 `python3 .harness/scripts/new-change.py --prefix C --title "需求标题"` 建卡，协调仓跨仓需求用 `--prefix WS`；子仓执行卡可加 `--workspace-card <协调仓卡片路径>`，再由协调仓登记 `repos[].local_change`。编号按仓独立分配，C 与 WS 数字无需一致。命令只生成骨架，还须补齐模板要求的需求、AC、授权及关联字段，不代表获准实施。缺脚本时走 apply-harness 的已授权升级流程，不能临时猜编号。完整分配算法、暂存区校验和旧卡兼容见 `.harness/rules/git-branch-and-commit.md`。
+
 ## 单仓：一张卡片，一份六阶段报告
 
 前端、后端、单仓全栈统一使用：
@@ -10,10 +14,10 @@
 .harness/changes/
 ├── README.md                  # 所有技能共用的产物协议
 ├── .gitignore                 # /.runtime/
-├── C-001-example/
+├── C-001/
 │   ├── change.md              # 需求、AC、设计约束、审批、状态、下一步
 │   └── report.md              # 六阶段结果，包含评审、验证及归档
-└── .runtime/C-001-example/     # 日志、门禁最新摘要、按需交接；不提交
+└── .runtime/C-001/     # 日志、门禁最新摘要、按需交接；不提交
 ```
 
 只在创建需求时实例化卡片，产生阶段结论时再创建 report.md。不要把整个 `_TEMPLATE/` 复制到需求目录，不为每次检查创建新报告。
@@ -41,8 +45,8 @@ draft → analyzing → coding → testing → reviewing → ci → verifying �
 协调仓/.harness/changes/WS-001/
 ├── workspace-change.md
 └── report.md
-前端仓/.harness/changes/C-001-front/change.md
-后端仓/.harness/changes/C-001-back/change.md
+前端仓/.harness/changes/C-001/change.md
+后端仓/.harness/changes/C-001/change.md
 ```
 
 子仓执行卡写 `artifact_mode: compact`、`workspace_change`、`workspace_ref` 和 `report_ref`，相对路径以卡片目录为基准。它保留本地 id/status 供 hooks 识别、记录分工和 commit/PR；需求和审批引用工作空间卡，阶段结果引用共享报告。

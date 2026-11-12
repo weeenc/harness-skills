@@ -6,6 +6,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.dont_write_bytecode = True
+from change_registry import card_errors, requires_change
+
 HEADER = re.compile(r"(?:feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)\([^\s():]+\): (\S.*)")
 HAN = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\U00020000-\U000323af]")
 CHANGE = re.compile(r"(?<![\w-])(?:WS|C)-[0-9]+(?![\w-])")
@@ -41,8 +45,9 @@ def main():
     parser.add_argument("--head", default="HEAD")
     args = parser.parse_args()
     try:
+        legacy = set()
         if args.message_file:
-            messages = [(str(args.message_file), args.message_file.read_text(encoding="utf-8"))]
+            messages = [(str(args.message_file), args.message_file.read_text(encoding="utf-8"), None)]
         else:
             if git(args.repo, "rev-parse", "--is-shallow-repository") == "true":
                 raise ValueError("CI 需要完整 Git 历史，当前为浅克隆")
@@ -60,10 +65,24 @@ def main():
                     base_sha = git(args.repo, "rev-parse", "--verify", "--end-of-options", base + "^{commit}")
                     subprocess.run(["git", "-C", str(args.repo), "merge-base", "--is-ancestor", base_sha, head_sha], check=True, capture_output=True)
                     commits = git(args.repo, "rev-list", "--reverse", f"{base_sha}..{head_sha}").splitlines()
-            messages = [(sha[:12], git(args.repo, "show", "-s", "--format=%B", sha)) for sha in commits]
+            # Separate, immutable activation point: keep the original format baseline.
+            card_base = (args.repo / ".harness/change-card-policy-base").read_text().strip()
+            if card_base == "ROOT":
+                legacy = set()
+            else:
+                if not re.fullmatch(r"[0-9a-f]{40,64}", card_base):
+                    raise ValueError("变更卡校验基线必须为固定 commit SHA 或 ROOT")
+                git(args.repo, "rev-parse", "--verify", card_base + "^{commit}")
+                if commits:
+                    subprocess.run(["git", "-C", str(args.repo), "merge-base", "--is-ancestor", card_base, head_sha], check=True, capture_output=True)
+                legacy = set(git(args.repo, "rev-list", card_base).splitlines())
+            messages = [(sha[:12], git(args.repo, "show", "-s", "--format=%B", sha), sha) for sha in commits]
         failed = False
-        for label, message in messages:
-            for error in errors(message, (args.repo / ".harness/changes").is_dir()):
+        for label, message, revision in messages:
+            issues = errors(message, requires_change(args.repo, revision))
+            if revision not in legacy:
+                issues += card_errors(args.repo, message, revision)
+            for error in issues:
                 print(f"FAIL {label}: {error}", file=sys.stderr)
                 failed = True
         if not failed:
