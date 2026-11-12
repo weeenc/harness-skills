@@ -9,7 +9,7 @@
 | 源（harness-core 下） | 目标 |
 |---|---|
 | rules/git-branch-and-commit.md | .harness/rules/git-branch-and-commit.md |
-| templates/scripts/check-commit-message.py、ci-commit-check.sh、install-commit-policy.py、commit-policy.md | .harness/scripts/ 对应文件 |
+| templates/scripts/check-commit-message.py、change_registry.py、new-change.py、ci-commit-check.sh、install-commit-policy.py、commit-policy.md | .harness/scripts/ 对应文件 |
 | templates/git-hooks/commit-msg | .harness/git-hooks/commit-msg（保留执行位） |
 | templates/agents/git-commit.md | .harness/git-commit.md |
 
@@ -19,10 +19,13 @@
 
 1. 检查根 AGENTS.md 已有指令是否与中文规范冲突，有冲突先按授权范围合并。
 2. 执行 `python3 .harness/scripts/install-commit-policy.py`。脚本追加管理块并保留其他内容；已有块不同、符号链接、其他 hooksPath 或启用的 hooks 会拒绝覆盖。按现场配置将校验调用合并到既有 commit-msg，不禁用其他钩子；基线和 AGENTS 块也应保留并完成合并。
-3. 仅首次启用生成 `.harness/commit-policy-base`：有历史取当前 HEAD，无提交用 `ROOT`。已有基线保持不变，模板不携带 SHA；不要通过重跑安装掩盖违规提交。无 Git 的协调目录部署后标记待启用，不自动建立仓库。
-4. 用临时候选文件验证中文信息通过、英文信息失败，并检查实际 hook 路径与执行权限。运行 CI 范围检查，记录实际检查条数；安装验证不在业务仓制造测试提交。
+3. 卡片校验首次启用还会生成 `.harness/change-card-policy-base`（当时 HEAD 或空仓 ROOT），只豁免该点及其祖先的卡片存在性检查，不影响原格式检查。两类基线都需提交，重复安装保持不变；模板不携带任何项目 SHA。
+   仅首次启用生成 `.harness/commit-policy-base`：有历史取当前 HEAD，无提交用 `ROOT`。已有基线保持不变，模板不携带 SHA；不要通过重跑安装掩盖违规提交。无 Git 的协调目录部署后标记待启用，不自动建立仓库。
+4. 采用 changes 管理的项目，先找到本次真实变更卡（新需求用 new-change.py 建卡），填写并暂存，再用临时候选文件引用它验证中文信息通过、英文信息失败；不要在业务仓虚构测试卡片，并检查实际 hook 路径与执行权限。运行 CI 范围检查，记录实际检查条数；安装验证不在业务仓制造测试提交。
 5. 在已有 CI 的完整历史检出后接入 `sh .harness/scripts/ci-commit-check.sh`，配置非零阻断。平台未接入时明确列为待完成，不宣称远端强制校验生效。
 
 ## 升级边界
 
 默认补缺不是整包覆盖。已有本地规则、脚本、AGENTS 和 hooks 的差异必须保留或明确合并；仅注册技能不会升级项目资产。再次安装不能重置基线，不写入个人技能目录。结果逐仓列出资产部署、AGENTS 合并、hook 启用、基线、范围检查、注册副本及远端 CI 状态。最终行为与技术边界详见部署后的 `.harness/scripts/commit-policy.md`。
+
+升级须保留目标项目“始终要求 ID”等本地定制。通用模板允许从未采用 changes 的项目省略 ID；CI 是否要求 ID 以被查提交及其父提交的树为准，不使用当前工作目录决定历史提交是否免检。迁移旧卡的带后缀 ID/目录必须单独核对引用，不自动改写历史。

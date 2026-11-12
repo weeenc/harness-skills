@@ -47,3 +47,7 @@
 旧卡转 compact 必须是明确的迁移任务：合并各阶段结论、人工签名、关键失败、知识回流和稳定证据链接，校验引用，再标记 `artifact_mode: compact`。全栈迁移同时补齐子仓引用。仅运行 `/install-skill` 不会升级项目内脚本和协议；更新本项目受影响的技能、脚本与模板时也必须保留本地适配。
 
 `_TEMPLATE/review.md`、`verify.md`、`archive.md` 保留给 legacy 使用，新卡只用 `change.md` / `workspace-change.md` / `local-change.md` 与 `report.md`。iterations 协议的选用与维护照旧；不因精简 changes 自动迁移其他目录。
+
+## 变更编号入口
+
+先查已有卡片，属于同一需求的后续工作复用原 ID。新需求使用 `python3 .harness/scripts/new-change.py --prefix C --title "需求标题"` 建卡，协调仓跨仓需求用 `--prefix WS`；子仓执行卡可加 `--workspace-card <协调仓卡片路径>`，再由协调仓登记 `repos[].local_change`。编号按仓独立分配，C 与 WS 数字无需一致。命令只生成骨架，还须补齐模板要求的需求、AC、授权及关联字段，不代表获准实施。缺脚本时走 apply-harness 的已授权升级流程，不能临时猜编号。完整分配算法、暂存区校验和旧卡兼容见 `.harness/rules/git-branch-and-commit.md`。

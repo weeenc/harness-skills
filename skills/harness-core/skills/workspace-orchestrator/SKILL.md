@@ -9,6 +9,11 @@ description: 编排多个独立 Git 仓库的全栈变更。维护工作空间�
 
 仓库内原有 Harness 仍负责执行本仓库的构建、测试、静态分析和 hooks。它们产生执行证据，但阶段推进和对用户呈现的唯一状态由 workspace change 负责。
 
+## 变更编号入口
+
+先查已有卡片，属于同一需求的后续工作复用原 ID。新需求使用 `python3 .harness/scripts/new-change.py --prefix C --title "需求标题"` 建卡，协调仓跨仓需求用 `--prefix WS`；子仓执行卡可加 `--workspace-card <协调仓卡片路径>`，再由协调仓登记 `repos[].local_change`。编号按仓独立分配，C 与 WS 数字无需一致。命令只生成骨架，还须补齐模板要求的需求、AC、授权及关联字段，不代表获准实施。缺脚本时走 apply-harness 的已授权升级流程，不能临时猜编号。完整分配算法、暂存区校验和旧卡兼容见 `.harness/rules/git-branch-and-commit.md`。
+
+
 ## Single-pipeline 模式
 
 | 工作空间阶段 | 一次性动作 | 仓库执行单元 |

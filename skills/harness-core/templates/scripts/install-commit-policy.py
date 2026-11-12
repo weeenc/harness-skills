@@ -17,8 +17,9 @@ def install(repo):
         raise ValueError("目标必须是独立 Git 根，不能修改父仓库配置")
     required = [".harness/git-hooks/commit-msg", ".harness/git-commit.md",
                 ".harness/rules/git-branch-and-commit.md", ".harness/scripts/check-commit-message.py",
-                ".harness/scripts/ci-commit-check.sh"]
-    for name in required + ["AGENTS.md", ".harness/commit-policy-base"]:
+                ".harness/scripts/ci-commit-check.sh", ".harness/scripts/change_registry.py",
+                ".harness/scripts/new-change.py"]
+    for name in required + ["AGENTS.md", ".harness/commit-policy-base", ".harness/change-card-policy-base"]:
         path = repo / name
         if path.is_symlink() or any(p.is_symlink() for p in path.parents if p != repo and repo in p.parents):
             raise ValueError(f"拒绝通过符号链接修改配置：{path}")
@@ -61,11 +62,26 @@ def install(repo):
             base = "ROOT"
         else:
             raise ValueError("HEAD 无提交但仓库有其他历史，请明确启用基线")
+    card_base_path = repo / ".harness/change-card-policy-base"
+    if card_base_path.exists():
+        card_base = card_base_path.read_text().strip()
+        if card_base != "ROOT":
+            import re
+            if not re.fullmatch(r"[0-9a-f]{40,64}", card_base):
+                raise ValueError("已有变更卡基线必须为固定 SHA，禁止重置")
+            git(repo, "rev-parse", "--verify", card_base + "^{commit}")
+            git(repo, "merge-base", "--is-ancestor", card_base, "HEAD")
+    else:
+        # New repositories check all commits; upgrades freeze the existing HEAD.
+        head = git(repo, "rev-parse", "--verify", "HEAD", check=False)
+        card_base = head.stdout.strip() if head.returncode == 0 else "ROOT"
     # Only write after all conflict checks have passed.
     if start not in before:
         agents.write_text(before + ("\n\n" if before else "") + block + "\n", encoding="utf-8")
     if not base_path.exists():
         base_path.write_text(base + "\n")
+    if not card_base_path.exists():
+        card_base_path.write_text(card_base + "\n")
     hook = repo / ".harness/git-hooks/commit-msg"
     hook.chmod(hook.stat().st_mode | 0o111)
     git(repo, "config", "--local", "core.hooksPath", ".harness/git-hooks")
